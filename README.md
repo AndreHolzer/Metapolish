@@ -8,6 +8,22 @@ This tool reads in a number of meta data files, collects information from two sp
 
 
 
+cross-platform
+
+Can be operated fully automated using either GUI interface, R markdown, or from command line.
+
+can process up to 198 files at the same time. 
+
+
+
+Input file names: 
+
+no spaces. Only of .pdf, .tsv, .csv, .txt, .xlsx format
+
+
+
+
+
 ## For Windows
 
 ### Requirements

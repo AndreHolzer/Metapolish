@@ -1,6 +1,5 @@
 # Things to do:
 #  - Integrate compound to metabolite conversion
-#  - Integrate dry weight normalisation
 #  - Integrate command line operation
 
 # Step 0: Initialise 
@@ -30,7 +29,7 @@
 # Step 1: Select input files (pdf, excel, tsv or csv files)
   
   # GUI to allow user selection
-  filters <- matrix(c("All accepted",".pdf .tsv .csv .xlsx", "PDF files",".pdf","Comma seperated files",".csv","Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 7, 2, byrow = TRUE)
+  filters <- matrix(c("All accepted",".pdf .tsv .csv .xlsx .txt", "PDF files",".pdf","Comma seperated files",".csv","Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 7, 2, byrow = TRUE)
   files <- tk_choose.files(caption = "Choose GCMS files to analyse", multi = TRUE, filter = filters)
   
   # identify file type by extension
@@ -40,8 +39,8 @@
   for (file in 1:length(files)){
   
     # Report error if file format is wrong
-    if(!(ext[[file]] %in% c("pdf","xlsx","tsv","csv")) ){
-      stop(str_c("Incorrect extension of file ",file,": Please select only files of supported format (.pdf,.xlsx,.tsv,.csv)."))
+    if(!(ext[[file]] %in% c("pdf","xlsx","tsv","csv","txt")) ){
+      stop(str_c("Incorrect extension of file ",file,": Please select only files of supported format (.pdf,.xlsx,.tsv,.csv,.txt)."))
     }
     
     # Report error if not all files are of same format
@@ -162,13 +161,50 @@
     file.list <- lapply(files, read_csv, col_names = TRUE)
   }
   
-  ## Step 1.4: load tsv data    
-  if(file_format == "tsv"){
+  ## Step 1.4: load tsv or txt data    
+  if(file_format == "tsv" | file_format == "txt"){
     file.list <- lapply(files, read_tsv, col_names = TRUE)
   }
     
+# Step 2: Load dry weight data (if existing)  
+  
+  # GUI to allow user to select file cnating weights
+  filters <- matrix(c("All accepted",".tsv .txt .csv .xlsx", "Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 5, 2, byrow = TRUE)
+  dw.file <- tk_choose.files(caption = "File with dry weight data for normalisation", multi = FALSE, filter = filters)
+  
+  # select action based on user selection
+  if (identical(dw.file, character(0))){
+    message(str_c("No file containing sample weight information was selected. Continued without normalisation!"))
+  } else {
     
-# Step 2: combine information into a matrix 
+    # identify file type by extension
+    ext <- file_ext(dw.file)
+    file_format <- unique(ext)
+    
+    # Report error if file format is wrong
+    if(!(ext %in% c("xlsx","tsv","csv","txt")) ){
+      message(str_c("Incorrect extension of file ",dw.file,". Only files of supported format (.xlsx,.tsv,.csv,.txt). Continued without normalisation."))
+    }
+    
+    ## Step 2.2: read excel and convert to csv
+    if(file_format == "xlsx"){
+      dw.file.info <- read.xlsx(dw.file, sheet = 1, colNames = TRUE, skipEmptyRows = TRUE, skipEmptyCols = TRUE, na.strings = "NA")  
+    }
+    
+    ## Step 2.3: load csv data    
+    if(file_format == "csv"){
+      dw.file.info <- read_csv(dw.file, col_names = TRUE)
+    }
+    
+    ## Step 2.4: load tsv or txt data    
+    if(file_format == "tsv" | file_format == "txt"){
+      dw.file.info <-  read_tsv(dw.file, col_names = TRUE)
+    }
+    
+  }
+  
+  
+# Step 3: combine information into a dataframe
   
   # initialise list to store raw data matrixes in 
   GCMS.raw <- vector(mode = 'list', length = length(files)) 
@@ -207,20 +243,41 @@
   #matrix.RT.ordered[is.na(matrix.RT.ordered)] <- ''
   #matrix.Resp.ordered[is.na(matrix.Resp.ordered)] <- ''
   
-# Step 3:  
   
-# Step 4: Convert Compound names into metabolites
+# Step 4: normalise response data by dry weights
+    
+  # check if dry weight data exists
+  if (exists("dw.file.info")){
+    # initizalise normalised dataframe
+    matrix.Resp.ordered.norm <- matrix.Resp.ordered
+    # initizalise row count
+    row <- 0
+    # loop through all entries 
+    for(c in dw.file.info$Sample){
+      row <- row + 1
+      # loop through all columns 
+      for(col in 2:ncol(matrix.Resp.ordered)){
+        # check if data and column name matches
+        if(c == colnames(matrix.Resp.ordered[col])){
+          matrix.Resp.ordered.norm[col] <- matrix.Resp.ordered[col] / dw.file.info$DW[row]
+        }
+      }
+    }
+  }
   
   
-# Step 5: Sort and condense matrix  
+# Step 5: Convert Compound names into metabolites
   
   
-# Step 6: Plot data 
+# Step 6: Sort and condense matrix  
+  
+  
+# Step 7: Plot data 
   
   # create output dir
   system(str_c("mkdir ",file.path(outfolder,"plots")))
   
-  # Step 6.1: Plot Distribution of Retention times (on Compound level)
+  # Step 7.1: Plot Distribution of Retention times (on Compound level)
     
     # normalise matrix
     # initialise dataframes
@@ -279,24 +336,31 @@
     ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.pdf")), width = 40, height = 50, units = "cm")
     ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.png")), width = 40, height = 50, units = "cm")
     
-  # Step 6.2: Plot Distribution of Retention times (on Metabolite level)
+  # Step 7.2: Plot Distribution of Retention times (on Metabolite level)
   
   
   
-# Step 7: Save/Export data  
+# Step 8: Save/Export data  
   
   # create output dir
   system(str_c("mkdir ",file.path(outfolder,"results")))
   
-  #Step 7.1: Save as .tsv files
+  #Step 8.1: Save as .tsv files
   write.table(matrix.RT.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Retention-Times.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
   write.table(matrix.Resp.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Responses.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+  if (exists("matrix.Resp.ordered.norm")){
+    write.table(matrix.Resp.ordered.norm, file.path(outfolder,"results",paste0(date,"_GCMS_Responses_normalised.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+  }
   
-  #Step 7.2: Save as .xlsx file
+  #Step 8.2: Save as .xlsx file
   wb = createWorkbook()
   addWorksheet(wb, "Responses")
   addWorksheet(wb, "Retention_times")
   writeData(wb, sheet = 1, matrix.Resp.ordered)
   writeData(wb, sheet = 2, matrix.RT.ordered)
+  if (exists("matrix.Resp.ordered.norm")){
+    addWorksheet(wb, "Responses_normalised")
+    writeData(wb, sheet = 3, matrix.Resp.ordered.norm)
+  }
   saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
   
