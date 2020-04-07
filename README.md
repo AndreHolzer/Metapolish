@@ -73,9 +73,11 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
    - [R-3.6.3-win.exe](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (for Windows, double click and follow installation menu, default settings can be used)
 
-   - (for Mac)
+   - [R-3.6.3.nn.pkg](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg) (for Mac OS X 10.11 (El Capitan) and higher, except Mac OS Catalina) 
+   
+   - [R-3.6.3.pkg](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg) (for Mac OS Catalina, 
 
-   - (for Linux)
+   - [R for Linux](https://cran.r-project.org/bin/linux/) (for Linux, )
 
      
 
