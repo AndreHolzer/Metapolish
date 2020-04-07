@@ -83,7 +83,7 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
   **Install the latest version of RStudio**
 
-  The full installation guide can be found [here][https://rstudio.com]. 
+  [Main Homepage][https://rstudio.com]. 
 
   Quick download links:
 
