@@ -10,7 +10,7 @@ The tool can be operated using either GUI interface, R markdown, or soon from co
 
 <figure class="image" >
   <p align="center"> 
-    <img src="https://github.com/AndreHolzer/ATAC-seq-pipeline/blob/master/other/scATAC-seq_workflow.jpg?raw=true" width="500">
+    <img src="https://github.com/AndreHolzer/GCMS-data-extraction-tool/blob/master/other/scATAC-seq_workflow.jpg?raw=true" width="500">
     <br>
     <em><b>Fig. 1:</b> Schematic diagram displaying the individual steps of the tool</em>
    </p> 
@@ -27,11 +27,11 @@ The tool can be operated using either GUI interface, R markdown, or soon from co
 
 ### **Quick links:**
 
-- Jump to [Requirements](https://github.com/AndreHolzer/ATAC-seq-pipeline#requirements)
-- Jump to [Installation](https://github.com/AndreHolzer/ATAC-seq-pipeline#installation)
-- Jump to [Usage](https://github.com/AndreHolzer/ATAC-seq-pipeline#usage)
-- Jump to [Support & Help](https://github.com/AndreHolzer/ATAC-seq-pipeline#support_&_help)
-- Jump to [Citation](https://github.com/AndreHolzer/ATAC-seq-pipeline#citation)
+- Jump to [Requirements](https://github.com/AndreHolzer/GCMS-data-extraction-tool#requirements)
+- Jump to [Installation](https://github.com/AndreHolzer/GCMS-data-extraction-tool#installation)
+- Jump to [Usage](https://github.com/AndreHolzer/GCMS-data-extraction-tool#usage)
+- Jump to [Support & Help](https://github.com/AndreHolzer/GCMS-data-extraction-tool#support_&_help)
+- Jump to [Citation](https://github.com/AndreHolzer/GCMS-data-extraction-tool#citation)
 
 
 
