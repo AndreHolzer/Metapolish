@@ -57,7 +57,6 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 - Jump to [Usage](https://github.com/AndreHolzer/ATAC-seq-pipeline#usage)
 - Jump to [Support & Help](https://github.com/AndreHolzer/ATAC-seq-pipeline#support_&_help)
 - Jump to [Citation](https://github.com/AndreHolzer/ATAC-seq-pipeline#citation)
-- Jump to [References](https://github.com/AndreHolzer/ATAC-seq-pipeline#references)
 
 
 
@@ -65,33 +64,32 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
 - #### **R**
 
-  **Install the latest version of R**
+  Install the latest version of R. A full installation guide can be found [here][https://cran.r-project.org/]. 
 
-  The full installation guide can be found [here][https://cran.r-project.org/]. 
+  Quick download links (Version 3.6.3):
 
-  Quick download links:
+   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe)
 
-   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (Version 3.6.3)
+   - [R for Mac OS El Capitan and higher](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg)
 
-   - [R for Mac](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg) (Version 3.6.3 for Mac OS X 10.11 (El Capitan) and higher, except Mac OS Catalina) 
-   
-   - [R for Mac OS Catalina](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg) (Version 3.6.3 for Mac OS Catalina)
-
+   - [R for Mac OS Catalina](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg)
+  
    - [R for Linux](https://cran.r-project.org/bin/linux/)
+
+     
 
 - #### **RStudio**
 
-  **Install the latest version of RStudio**
-
-  Main Homepage can be found [here](https://rstudio.com).
+  Install the latest version of RStudio. More information can be found [here](https://rstudio.com).
 
   Quick download links:
 
    - [RStudio for Windows](https://rstudio.com/products/rstudio/download/#download)
 
    - [RStudio for Mac](https://rstudio.com/products/rstudio/download/#download)
-   
+
    - [RStudio for Linux](https://rstudio.com/products/rstudio/download/#download)
+
 
 
 ## Installation
@@ -110,105 +108,66 @@ Install software/database in the following order on a personal computer.
 
    
 
-3. **Install pipeline's Conda environment**
-
-   The environment needs to be created only once. It will be activated once you start the tool.
-
-   ```
-   conda env create -f envs/core.yaml
-   ```
-
-   To update the environment (if you need extra programs), you can run the following command:
-
-   ```
-   conda env update -f envs/core.yaml
-   ```
-
-
-
-
-
 ## Usage
 
+#### **Input**
 
+The tool can take two different inputs, the GCMS summary data (from Thermo or … ), as well as additional dry weight data sample information 
 
-run .bat file via double click
+1. ##### GCMS data (required)
 
+   GCMS data must contain information on Compounds, Response time and Response and can be provided in several formats: 
 
-
-
-
-
-
-
-
-1. Activate virtual Snakemake environment using conda**
-
-   ```bash
-   conda activate ATAC-seq_snakemake-env
-   ```
+   - `.pdf`: format from Thermo output (see )
+   - `.tsv`: format from Thermo output (see )
+   - `.csv`: format from Thermo output (see )
+   - `.xlsx`: format from Thermo output (see )
 
    
 
-2. **Edit the configuration file config.yaml with the parameters of your choice**
+2. ##### Dry weights (optional)
 
-   > **IMPORTANT**: DO NOT BLINDLY USE A TEMPLATE/EXAMPLE INPUT YAML FILE. READ THROUGH THE FOLLOWING GUIDE TO MAKE A CORRECT CONFIG FILE.
+   Dry weight information about the individual samples must be provided in a tab separate file of the following format. 
 
-   The input config.yaml file specifies all essential input parameters and files that are required for a successful execution of the pipeline. Please make sure to specify absolute paths rather than relative paths in your input config.yaml files.
+   | Sample                         | DW        | Unit              |
+   | ------------------------------ | --------- | ----------------- |
+   | <File name incuding extension> | <integer> | <charcter string> |
+   | <File name incuding extension> | <integer> | <charcter string> |
+   | <File name incuding extension> | <integer> | <charcter string> |
 
-   - [Example config.yaml file]()
+   > **IMPORTANT**: DO NOT USE ANY OTHER COLUMN NAMES
 
-   Edit the `config.yaml` file to set your specific configurations, such as:
-
-   - `rawdata`: directory where all zipped raw fastq files are stored
-   - `md5sum`: file where all md5sums are stored
-   - `outfolder`: directory where all your output files are located
-   - `celltype`: what cell type/tissue your samples came from
-   - `samples`: names of the sample to be processed
-   - …
+   Edit the [Sample_info.tsv]() file to add specific sample dry weight conditions.
 
 
 
-3. **Run the Snakemake pipeline**
+#### **Modes of execution**
 
-   ***On local computer***
+- ##### Fully automated (GUI)
 
-   Add the snakemake file `Snakefile` and the edited configuration file `config.yaml` to your project directory, and run the following commands:
+  > **IMPORTANT**: NOT CURRENTLY SUPPORTED (WORK IN PROGRESS)
 
-   ```
-   source activate peakcalling
-   snakemake --configfile config.yaml
-   ```
+  Execute the analysis by a simple double click onto the
 
-   ***On cluster***
+  - run.bat (on Windows)
+  - run.sh (on Linus & Mac OS)
 
-   Or, you can submit the job onto the hydrogen cluster, or even add a cluster configuration file (e.g. the `cluster.json` provided), which allows you to specify the computational resource (such as memory usage) allocated for each snakemake rule.
+  
 
-   ```
-   ....
-   ```
+- ##### Interactive (GUI + error reporting)
 
-   Once you are done you can deactivate the conda environment again
+  - Start RStudio and load/open the main analysis script (GCMS_main-anaylsis-script.R) from the scripts folder
+  - Klick Source to start the analysis
 
-   ```
-   source deactivate
-   ```
+  > **IMPORTANT**: Once the analysis has finished check progress log to see whether there were any errors.
 
-   
+  
 
-4. **Output**
+#### **Data Output**
 
-   There will be X output folders: `bedfiles` stores all the .bed files converted from .bam files, `peakcalling` stores the peak calling outputs, and `count` stores peak counts for each sample.
+A main output folder `<date>_GCSM-analysis-results` will be created under the select output directory which will include up to three output subfolder: `pdf2tsv` stores information that was extracted from from .pdf files (if input files where of this type), `plots` stores all plots generated, and `results` stores all matrixes containing Retention time and Response data for all sample.
 
-   The final peak count per sample matrix is stored in `count/{celltype}_per_sample_count.txt`.
-
-   A directed acyclic graph illustrating the dependencies between jobs can be generated using:
-
-   ```
-   snakemake --configfile config.yaml --dag | dot -Tsvg > pipeline_dag.svg
-   ```
-
-
+A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-results/results/<date>_GCMS_analysis-results.xlsx`.
 
 
 
@@ -230,18 +189,6 @@ If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com
 
 - **Andre Holzer** - *PhD Student, Department of Plant Sciences, Univeristy of Cambridge* [https://orcid.org/0000-0003-2439-6364][https://orcid.org/0000-0003-2439-6364]
 
-- **Matthew P Davey ** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge*
+- **Matthew P Davey ** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [https://orcid.org/0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
 
-  [https://orcid.org/0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
-
-We'd also like to acknowledge Monika Krolikowski who contributed prototype some parts of this pipeline.
-
-
-
-## References
-
-**Packages and software used:** 
-
-- **tabula-py** Copyright (c) 2016 Michiaki Ariga
-
-[https://cran.r-project.org/]: 
+We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
