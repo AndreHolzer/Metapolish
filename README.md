@@ -76,7 +76,7 @@ Install software/database in the following order on a personal computer.
    Get the latest version of the tool using the Pull or Git clone command
 
    ```
-   conda env create -f envs/core.yaml
+    git clone https://github.com/AndreHolzer/GCMS-data-extraction-tool --recursive
    ```
 
    or for Windows: got to the [GitHub page](https://github.com/AndreHolzer/GCMS-data-extraction-tool) and download and save the repository as .zip file ([Quick download](https://github.com/AndreHolzer/GCMS-data-extraction-tool/archive/master.zip))
