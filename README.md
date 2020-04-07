@@ -20,55 +20,72 @@ Input file names:
 
 no spaces. Only of .pdf, .tsv, .csv, .txt, .xlsx format
 
+(Once publicly available insert DOI by Zenodo)
+
+This pipeline is using the **Snakemake workflow** management system , providing a reproducible and scalable data analyses which allows a fully automated processing of **Assay for Transposase-Accessible Chromatin using sequencing** (ATAC-seq) data. The pipeline is very easy to install, includes extensive quality control and reporting functions and can be run on stand alone machines as well as cluster engines such as PBS or Condor (others possible). 
+
+The pipeline is optimised for paired-end ATAC-seq data and allows a full end-to-end data analysis, starting from raw FASTQ files all the way to peak calling and signal track generation. Due to the characteristics of Snakemake the pipeline can also be started from intermediate stages and allows easy resuming of runs. While running, the pipeline produces several reports, including quality control measures, analysis of reproducibility and relaxed thresholding of peaks, fold-enrichment and pvalue signal tracks. 
+
+<figure class="image" >
+  <p align="center"> 
+    <img src="https://github.com/AndreHolzer/ATAC-seq-pipeline/blob/master/other/scATAC-seq_workflow.jpg?raw=true" width="500">
+    <br>
+    <em><b>Fig. 1:</b> Schematic diagram displaying the individual steps of the ATAC-seq pipeline</em>
+   </p> 
+</figure>
+
+The pipeline has been tested on both Mac and Linux operating system analysing plant and algae ATAC-seq data and comes with a genome database for *Arabidopsis thaliana* (TAIR10) and the green model alga *Chlamydomonas reinhardtii* (v5.6 + v4.0). However, custom genomes in FASTA format can be used as well.
 
 
 
+### Features
 
-## For Windows
+- **Simplicity**: The pipeline provides a reproducible and scalable data analyses which can be executed across different platforms such as your personal computer as well as on cluster engines such as PBS or Condor.
 
-### Requirements
+- **End-to-end data analysis**: Starting from raw FASTQ files all the way to peak calling and signal track generation and supports single-end or paired-end ATAC-seq data.
 
-- #### Conda
+- **Supported genomes**: In difference to most other published pipelines for ATAC-Seq analysis, this pipeline was designed for the use in plant and algae research. We provide a genome database for *A. thaliana* (TAIR10) and *C. reinhardtii* (v5.6 + v4.0). Nevertheless, you can also use the pipeline together with your genome database of choice (human, mouse, etc.).
 
-  **Install the latest version of Miniconda** 
 
-  The full installation guide can be found [here][https://conda.io/projects/conda/en/latest/user-guide/install/index.html].
 
-  > **IMPORTANT**:  Make sure that you select the correct installer for your machine. Here we show how to do it for Windows
+### **Quick links:**
 
-  1. Download the installer:
+- Jump to [Requirements](https://github.com/AndreHolzer/ATAC-seq-pipeline#requirements)
+- Jump to [Installation](https://github.com/AndreHolzer/ATAC-seq-pipeline#installation)
+- Jump to [Usage](https://github.com/AndreHolzer/ATAC-seq-pipeline#usage)
+- Jump to [Support & Help](https://github.com/AndreHolzer/ATAC-seq-pipeline#support_&_help)
+- Jump to [Citation](https://github.com/AndreHolzer/ATAC-seq-pipeline#citation)
+- Jump to [References](https://github.com/AndreHolzer/ATAC-seq-pipeline#references)
 
-     [Miniconda installer for Windows](https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe).
 
-  2. [Verify your installer hashes](https://conda.io/projects/conda/en/latest/user-guide/install/download.html#hash-verification). 
-  
-  3. Double-click the `.exe` file.
 
-  4. Follow the instructions on the screen.
+## Requirements
 
-     If you are unsure about any setting, accept the defaults. You can change them later.
+- #### **R**
 
-     When installation is finished, from the **Start** menu, open the Anaconda Prompt.
+  **Install the latest version of R**
 
-  5. Test your installation. In your terminal window or Anaconda Prompt, run the command `conda list`. A list of installed packages appears if it has been installed correctly.
+  The full installation guide can be found [here][https://cran.r-project.org/]. 
+
+  Quick download links:
+
+   - [R-3.6.3-win.exe](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (for Windows, double click and follow installation menu, default settings can be used)
+
+   - (for Mac)
+
+   - (for Linux)
 
      
-  
-  **Updating conda**
 
-  1. Open your Anaconda Prompt from the start menu.
-2. Navigate to the `anaconda` directory.
-  3. Run `conda update conda`.
-
-
-
-### Installation
+## Installation
 
 Install software/database in the following order on a personal computer.
 
 1. **Clone/Download the repository from Github**
 
    Get the latest version of the pipeline using the Pull or Git clone command
+
+   
 
 2. 
 
@@ -205,3 +222,5 @@ We'd also like to acknowledge Monika Krolikowski who contributed prototype some 
 **Packages and software used:** 
 
 - **tabula-py** Copyright (c) 2016 Michiaki Ariga
+
+[https://cran.r-project.org/]: 
