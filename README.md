@@ -71,7 +71,7 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
   Quick download links:
 
-   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (Version R 3.6.3)
+   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (Version 3.6.3)
 
    - [R for Mac](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg) (Version 3.6.3 for Mac OS X 10.11 (El Capitan) and higher, except Mac OS Catalina) 
    
