@@ -87,11 +87,11 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
   Quick download links:
 
-   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Windows, double click and follow installation menu, default settings can be used)
+   - [RStudio for Windows](https://rstudio.com/products/rstudio/download/#download)
 
-   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Mac) 
+   - [RStudio for Mac](https://rstudio.com/products/rstudio/download/#download)
    
-   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Linux)
+   - [RStudio for Linux](https://rstudio.com/products/rstudio/download/#download)
 
 
 ## Installation
