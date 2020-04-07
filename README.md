@@ -71,19 +71,19 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
   Quick download links:
 
-   - [R-3.6.3-win.exe](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (for Windows, double click and follow installation menu, default settings can be used)
+   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe) (Version R-3.6.3)
 
-   - [R-3.6.3.nn.pkg](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg) (for Mac OS X 10.11 (El Capitan) and higher, except Mac OS Catalina) 
+   - [R for Mac](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg) (Version 3.6.3 for Mac OS X 10.11 (El Capitan) and higher, except Mac OS Catalina) 
    
-   - [R-3.6.3.pkg](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg) (for Mac OS Catalina)
+   - [R for Mac OS Catalina](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg) (Version 3.6.3 for Mac OS Catalina)
 
-   - [R for Linux](https://cran.r-project.org/bin/linux/) (for Linux)
+   - [R for Linux](https://cran.r-project.org/bin/linux/)
 
 - #### **RStudio**
 
   **Install the latest version of RStudio**
 
-  [Main Homepage][https://rstudio.com]. 
+  Main Homepage can be found [here](https://rstudio.com).
 
   Quick download links:
 
