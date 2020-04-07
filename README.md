@@ -79,7 +79,20 @@ The pipeline has been tested on both Mac and Linux operating system analysing pl
 
    - [R for Linux](https://cran.r-project.org/bin/linux/) (for Linux)
 
-     
+- #### **RStudio**
+
+  **Install the latest version of RStudio**
+
+  The full installation guide can be found [here][https://rstudio.com]. 
+
+  Quick download links:
+
+   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Windows, double click and follow installation menu, default settings can be used)
+
+   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Mac) 
+   
+   - [RStudio Installation](https://rstudio.com/products/rstudio/download/#download) (for Linux)
+
 
 ## Installation
 
