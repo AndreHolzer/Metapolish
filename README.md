@@ -1,52 +1,27 @@
-# GCMS data extraction software
+# GCMS data analysis software
 
-Extracts peak data from GCMS .pdf output files and saves data as .txt files.
+![Scripting](https://img.shields.io/badge/Language-R-red.svg)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Work in progress!) 
 
+This tool is written in **R** and provides reproducible and scalable data processing of **Gas Chromatography Mass Spectrometry (GC/MS)** information. The tool bridges the gap between output of pre-analysis software like [**Thermo…**]() and required matrix input formats for downstream analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
 
+This tool is very easy to install, includes additional plotting and reporting functions and can be run on machines operating Windows, Mac OS or Linux. It reads in a number of pre-processed GC/MS meta data files, collects additional sample information regarding dry weight and creates condensed outputs suitable for further downstream analysis. As input files, tab separated files can be used alongside the common .pdf export summary formats from Thermo … . Up to 198 input files of the type .pdf, .tsv, .csv, .txt or .xlsx can be processed at the same time.  
 
-This tool reads in a number of meta data files, collects information from two specified columns and outputs the information in a new file. As input files, tab seperated files must be used. You can generate them from ecxel files by saving them as "Tab seperated text (.txt)".
-
-
-
-cross-platform
-
-Can be operated fully automated using either GUI interface, R markdown, or from command line.
-
-can process up to 198 files at the same time. 
-
-
-
-Input file names: 
-
-no spaces. Only of .pdf, .tsv, .csv, .txt, .xlsx format
-
-
-
-(Once publicly available insert DOI by Zenodo)
-
-This pipeline is using the **Snakemake workflow** management system , providing a reproducible and scalable data analyses which allows a fully automated processing of **Assay for Transposase-Accessible Chromatin using sequencing** (ATAC-seq) data. The pipeline is very easy to install, includes extensive quality control and reporting functions and can be run on stand alone machines as well as cluster engines such as PBS or Condor (others possible). 
-
-The pipeline is optimised for paired-end ATAC-seq data and allows a full end-to-end data analysis, starting from raw FASTQ files all the way to peak calling and signal track generation. Due to the characteristics of Snakemake the pipeline can also be started from intermediate stages and allows easy resuming of runs. While running, the pipeline produces several reports, including quality control measures, analysis of reproducibility and relaxed thresholding of peaks, fold-enrichment and pvalue signal tracks. 
+The tool can be operated using either GUI interface, R markdown, or soon from command line (the latter which is still work in progress). The tool has been tested on both Mac and Windows operating systems, analysing GC/MS data obtained from algae samples. 
 
 <figure class="image" >
   <p align="center"> 
     <img src="https://github.com/AndreHolzer/ATAC-seq-pipeline/blob/master/other/scATAC-seq_workflow.jpg?raw=true" width="500">
     <br>
-    <em><b>Fig. 1:</b> Schematic diagram displaying the individual steps of the ATAC-seq pipeline</em>
+    <em><b>Fig. 1:</b> Schematic diagram displaying the individual steps of the tool</em>
    </p> 
 </figure>
-
-The pipeline has been tested on both Mac and Linux operating system analysing plant and algae ATAC-seq data and comes with a genome database for *Arabidopsis thaliana* (TAIR10) and the green model alga *Chlamydomonas reinhardtii* (v5.6 + v4.0). However, custom genomes in FASTA format can be used as well.
 
 
 
 ### Features
 
-- **Simplicity**: The pipeline provides a reproducible and scalable data analyses which can be executed across different platforms such as your personal computer as well as on cluster engines such as PBS or Condor.
-
-- **End-to-end data analysis**: Starting from raw FASTQ files all the way to peak calling and signal track generation and supports single-end or paired-end ATAC-seq data.
-
-- **Supported genomes**: In difference to most other published pipelines for ATAC-Seq analysis, this pipeline was designed for the use in plant and algae research. We provide a genome database for *A. thaliana* (TAIR10) and *C. reinhardtii* (v5.6 + v4.0). Nevertheless, you can also use the pipeline together with your genome database of choice (human, mouse, etc.).
+- **Simplicity**: The tool provides a reproducible and scalable data analyses which can be executed across operating systems.
+- **Integrated data extraction from .pdf files **: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo … or ….
 
 
 
@@ -112,16 +87,18 @@ Install software/database in the following order on a personal computer.
 
 #### **Input**
 
-The tool can take two different inputs, the GCMS summary data (from Thermo or … ), as well as additional dry weight data sample information 
+The tool takes two different inputs, the GCMS summary data, as well as additional sample information regarding dry weights.
+
+> **IMPORTANT**: FILE NAMES MUST NOT CONTAIN ANY SPACES
 
 1. ##### GCMS data (required)
 
    GCMS data must contain information on Compounds, Response time and Response and can be provided in several formats: 
 
-   - `.pdf`: format from Thermo output (see )
-   - `.tsv`: format from Thermo output (see )
-   - `.csv`: format from Thermo output (see )
-   - `.xlsx`: format from Thermo output (see )
+   - `.pdf`: format from Thermo analysis output is supported and once loaded will be converted into .tsv format ([see example input](https://github.com/AndreHolzer/GCMS-data-extraction-tool/blob/master/example_data/Thermo-example_output_1.pdf))
+   - `.tsv`: format containing three columns (Compound, Retention time, Response) ([see example input](example_data/Sample1.tsv))
+   - `.csv`: format containing three columns (Compound, Retention time, Response) ([see example input](example_data/Sample1.tsv))
+   - `.xlsx`: format with first sheet containing three columns (Compound, Retention time, Response)  ([see example input](example_data/Sample1.tsv))
 
    
 
@@ -129,15 +106,15 @@ The tool can take two different inputs, the GCMS summary data (from Thermo or �
 
    Dry weight information about the individual samples must be provided in a tab separate file of the following format. 
 
-   | Sample                         | DW        | Unit              |
-   | ------------------------------ | --------- | ----------------- |
-   | <File name incuding extension> | <integer> | <charcter string> |
-   | <File name incuding extension> | <integer> | <charcter string> |
-   | <File name incuding extension> | <integer> | <charcter string> |
+   | Sample                            | DW          | Unit                 |
+   | --------------------------------- | ----------- | -------------------- |
+   | \<File name including extension\> | \<integer\> | \<character string\> |
+   | \<File name including extension\> | \<integer\> | \<character string\> |
+   | \<File name including extension\> | \<integer\> | \<character string\> |
 
    > **IMPORTANT**: DO NOT USE ANY OTHER COLUMN NAMES
 
-   Edit the [Sample_info.tsv]() file to add specific sample dry weight conditions.
+   Edit the [Sample_info.tsv](example_data/Sample_info.tsv) file to add specific sample dry weight conditions.
 
 
 
