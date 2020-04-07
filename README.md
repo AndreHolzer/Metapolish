@@ -21,7 +21,7 @@ The tool can be operated using either GUI interface, R markdown, or soon from co
 ### Features
 
 - **Simplicity**: The tool provides a reproducible and scalable data analyses which can be executed across operating systems.
-- **Integrated data extraction from .pdf files **: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo … or ….
+- **Integrated data extraction from .pdf files**: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo … or ….
 
 
 
