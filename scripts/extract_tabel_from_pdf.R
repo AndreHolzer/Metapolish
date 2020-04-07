@@ -265,6 +265,8 @@
     }
   }
   
+  matrix.Resp.ordered.norm.zero <- matrix.Resp.ordered.norm
+  matrix.Resp.ordered.norm.zero[is.na(matrix.Resp.ordered.norm.zero)] <- 0
   
 # Step 5: Convert Compound names into metabolites
   
@@ -314,7 +316,7 @@
     # make boxplot (version 1)
     ggboxplot(subset.clean, x = "Compound", y = "RT",
               title = "", ylab = "Retention time (normalized)",
-              palette = col_vector3, xlim = c(-3,3),
+              palette = col_vector_3, xlim = c(-3,3),
               rotate = TRUE, 
               add = "jitter", add.params = list(size = 0.3, jitter = 0.2))+
       geom_jitter(aes(colour = Sample), size = 2, jitter = 0.2)
@@ -361,6 +363,8 @@
   if (exists("matrix.Resp.ordered.norm")){
     addWorksheet(wb, "Responses_normalised")
     writeData(wb, sheet = 3, matrix.Resp.ordered.norm)
+    addWorksheet(wb, "Responses_normalised_0")
+    writeData(wb, sheet = 4, matrix.Resp.ordered.norm.zero)
   }
   saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
   

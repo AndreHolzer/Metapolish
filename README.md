@@ -20,6 +20,8 @@ Input file names:
 
 no spaces. Only of .pdf, .tsv, .csv, .txt, .xlsx format
 
+
+
 (Once publicly available insert DOI by Zenodo)
 
 This pipeline is using the **Snakemake workflow** management system , providing a reproducible and scalable data analyses which allows a fully automated processing of **Assay for Transposase-Accessible Chromatin using sequencing** (ATAC-seq) data. The pipeline is very easy to install, includes extensive quality control and reporting functions and can be run on stand alone machines as well as cluster engines such as PBS or Condor (others possible). 
