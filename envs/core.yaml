@@ -1,6 +1,0 @@
-name: GCMS-extraction_env
-channels:
-  - conda-forge
-  - defaults
-dependencies:
-  - tabula-py
