@@ -1,27 +1,28 @@
-# GCMS data analysis software
+# MetaPLMA - Metabolite Peak List Merge & Annotation Tool
 
 ![Scripting](https://img.shields.io/badge/Language-R-red.svg)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Work in progress!) 
 
-This tool is written in **R** and provides reproducible and scalable data processing of **Gas Chromatography Mass Spectrometry (GC/MS)** information. The tool bridges the gap between output of pre-analysis software like [**Thermo…**]() and required matrix input formats for downstream analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
+This tool is written in **R** and allows the reproducible and scalable data processing of peak information acquired trough **Gas Chromatography Mass Spectrometry (GC/MS)**. The tool bridges the gap between the output of pre-analysis software like [**Thermo Xcalibur-TraceFinder**](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/lc-ms-data-acquisition-software/tracefinder-software.html) or [**Shimadzu GCMS solution**](https://www.ssi.shimadzu.com/products/gas-chromatography-mass-spectrometry/gcmssolution-software.html) and required input formats for downstream metabolite analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
 
-This tool is very easy to install, includes additional plotting and reporting functions and can be run on machines operating Windows, Mac OS or Linux. It reads in a number of pre-processed GC/MS meta data files, collects additional sample information regarding dry weight and creates condensed outputs suitable for further downstream analysis. As input files, tab separated files can be used alongside the common .pdf export summary formats from Thermo … . Up to 198 input files of the type .pdf, .tsv, .csv, .txt or .xlsx can be processed at the same time.  
+The software is very easy to install, includes additional plotting and reporting functions and can be run on machines operating **Windows**, **Mac OS** or **Linux**. It reads in individual pre-processed GC/MS data files containing metabolite-peak data of single samples, collects additional sample information regarding dry weight and creates condensed and normalised **Compound-Concentration Matrix** outputs suitable for further downstream analysis. Up to 198 input files of the type .pdf, .tsv, .csv, .txt or .xlsx can be processed at the same time.  
 
-The tool can be operated using either GUI interface, R markdown, or soon from command line (the latter which is still work in progress). The tool has been tested on both Mac and Windows operating systems, analysing GC/MS data obtained from algae samples. 
+The tool can be operated using either a GUI interface, R markdown, or the command line (the latter which is still work in progress). The tool has been tested on both Mac and Windows operating systems, analysing GC/MS data obtained from different algae samples. 
 
 <figure class="image" >
   <p align="center"> 
-    <img src="https://github.com/AndreHolzer/GCMS-data-extraction-tool/blob/master/other/scATAC-seq_workflow.jpg?raw=true" width="500">
+    <img src="https://github.com/AndreHolzer/GCMS-data-extraction-tool/blob/master/images/MetaPLM-workflow.png?raw=true" width="400">
     <br>
-    <em><b>Fig. 1:</b> Schematic diagram displaying the individual steps of the tool</em>
+    <em><b>Fig. 1:</b> Schematic diagram displaying the individual files and steps of the tool</em>
    </p> 
 </figure>
 
 
 
+
 ### Features
 
-- **Simplicity**: The tool provides a reproducible and scalable data analyses which can be executed across operating systems.
-- **Integrated data extraction from .pdf files**: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo … or ….
+- **Simplicity**: The tool provides reproducible and scalable data analysis which can be executed across operating systems.
+- **Integrated data extraction from .pdf and .xlsx files of common peak quantification tools**: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo Xcalibur-TraceFinder or Shimadzu GCMS solution.
 
 
 
