@@ -1,4 +1,4 @@
-# MetaPLMA - Metabolite Peak List Merge & Annotation Tool
+# MetaPLMA - A Metabolite Peak List Merge & Annotation Tool
 
 ![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Work in progress!) 
 
