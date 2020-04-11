@@ -1,0 +1,28 @@
+[Header]
+Data File Name	C:\GCMSsolution\Data\Project1\240220\240220\23-1.cdf
+Output Date	4/9/2020
+Output Time	1:09:03 PM
+
+[MC Peak Table]
+# of Peaks	18
+Mass	TIC
+Peak#	Ret.Time	Proc.From	Proc.To	Mass	Area	Height	A/H	Conc.	Mark	Name	Ret. Index
+1	2.792	2.750	2.808	TIC	407517401	190693399	2.14	7.69	   	3-Hexanone	
+2	2.825	2.808	2.837	TIC	266405517	191044056	1.39	5.03	 V 	3-Hexanone	
+3	2.913	2.837	2.933	TIC	1234850637	233203990	5.30	23.30	 V 	3-Hexanone	
+4	2.955	2.933	3.008	TIC	685944216	241448609	2.84	12.94	 V 	3-Hexanone	
+5	3.034	3.008	3.063	TIC	45303091	42507797	1.07	0.85	   	Heptane, 3-methyl-	
+6	3.262	3.237	3.283	TIC	383067892	309991340	1.24	7.23	   	Hexane, 2,3,3-trimethyl-	
+7	4.377	4.345	4.409	TIC	33377333	29514498	1.13	0.63	   	Nonane	
+8	7.289	7.210	7.306	TIC	7986651	2873698	2.78	0.15	   	Oxygen	
+9	16.053	16.015	16.122	TIC	27880841	9942530	2.80	0.53	   	Tridecanoic acid, 12-methyl-, methyl ester	
+10	18.437	18.329	18.546	TIC	1311904226	372165177	3.53	24.75	   	Pentadecanoic acid, methyl ester	
+11	19.911	19.842	19.973	TIC	33378684	10164262	3.28	0.63	   	5,8,11,14,17-Eicosapentaenoic acid, methyl ester, (all-Z)-	
+12	20.354	20.286	20.530	TIC	174202831	46990189	3.71	3.29	   	Methyl hexadec-9-enoate	
+13	20.875	20.800	21.000	TIC	142091328	41995708	3.38	2.68	   	Hexadecanoic acid, methyl ester	
+14	23.389	23.322	23.479	TIC	15217303	4054177	3.75	0.29	   	Heptadecanoic acid, methyl ester	
+15	24.101	24.027	24.192	TIC	15590693	4152409	3.75	0.29	   	Doconexent	
+16	24.414	24.366	24.497	TIC	13421390	4057199	3.31	0.25	   	2H-Pyran, tetrahydro-2-(12-pentadecynyloxy)-	
+17	25.896	25.811	26.037	TIC	128614104	33420668	3.85	2.43	   	Methyl stearate	
+18	29.277	29.160	29.508	TIC	373305735	80173871	4.66	7.04	   	5,8,11,14,17-Eicosapentaenoic acid, methyl ester, (all-Z)-	
+

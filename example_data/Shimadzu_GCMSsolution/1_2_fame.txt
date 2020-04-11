@@ -1,0 +1,52 @@
+[Header]
+Data File Name	C:\GCMSsolution\Data\Project1\240220\240220\1-2.cdf
+Output Date	4/9/2020
+Output Time	12:45:47 PM
+
+[MC Peak Table]
+# of Peaks	42
+Mass	TIC
+Peak#	Ret.Time	Proc.From	Proc.To	Mass	Area	Height	A/H	Conc.	Mark	Name	Ret. Index
+1	2.763	2.706	2.782	TIC	427233592	184300529	2.32	5.02	   	3-Hexanone	
+2	2.799	2.782	2.814	TIC	295117115	194705406	1.52	3.46	 V 	3-Hexanone	
+3	2.846	2.814	2.860	TIC	592343299	226089996	2.62	6.95	 V 	3-Hexanone	
+4	2.873	2.860	2.892	TIC	458734814	241521155	1.90	5.39	 V 	Sulfurous acid, 2-ethylhexyl tetradecyl ester	
+5	2.916	2.892	2.938	TIC	702860639	257814472	2.73	8.25	 V 	5-Methyl-4-octanone	
+6	2.952	2.938	2.962	TIC	367714668	266703559	1.38	4.32	 V 	3-n-Propyl-5-methylhexan-2-one	
+7	2.967	2.962	3.046	TIC	690074418	267181010	2.58	8.10	 V 	3-n-Propyl-5-methylhexan-2-one	
+8	3.095	3.086	3.133	TIC	5970695	3592748	1.66	0.07	   	Oxygen	
+9	3.145	3.133	3.153	TIC	2307117	3758432	0.61	0.03	 V 	Cyacetacide	
+10	3.168	3.156	3.228	TIC	9319341	4303359	2.17	0.11	   	Cyacetacide	
+11	3.254	3.228	3.304	TIC	449885329	348316587	1.29	5.28	   	Hexane, 2,3,3-trimethyl-	
+12	4.379	4.354	4.412	TIC	40579678	37184804	1.09	0.48	   	Nonane	
+13	16.080	16.029	16.125	TIC	48120811	19338224	2.49	0.56	   	Tridecanoic acid, 12-methyl-, methyl ester	
+14	18.459	18.364	18.546	TIC	919526290	278968776	3.30	10.80	   	Pentadecanoic acid, methyl ester	
+15	20.382	20.333	20.440	TIC	37193619	13138662	2.83	0.44	   	Methyl hexadec-9-enoate	
+16	20.926	20.834	21.008	TIC	721599329	214024900	3.37	8.47	   	Hexadecanoic acid, methyl ester	
+17	23.424	23.372	23.476	TIC	39402496	12561837	3.14	0.46	   	Heptadecanoic acid, methyl ester	
+18	24.445	24.401	24.462	TIC	16306732	7088005	2.30	0.19	   	Oxygen	
+19	24.495	24.462	24.572	TIC	54611061	15491592	3.53	0.64	 V 	Bicyclo[3.2.1]oct-2-ene, 2-phenyl-	
+20	24.923	24.874	24.938	TIC	31825161	14502806	2.19	0.37	   	1H-inden-1-one, 2-[[4-(dimethylamino)phenyl]methyl]-2,3-dihydro-	
+21	24.992	24.938	25.063	TIC	160787598	40096188	4.01	1.89	 V 	3-Furancarboxylic acid, 4-(2,3-dihydro-1-oxo-1H-inden-2-yl)tetrahydro-5,5-dimethyl-2-oxo-, ethyl ester	
+22	25.133	25.063	25.190	TIC	41592484	11592436	3.59	0.49	 V 	Androst-11-en-17-one, 3-(formyloxy)-, (3.alpha.,5.beta.)-	
+23	25.283	25.190	25.382	TIC	544171778	131625451	4.13	6.39	   	9-Octadecenoic acid, methyl ester, (E)-	
+24	25.453	25.382	25.585	TIC	367312275	72441436	5.07	4.31	 V 	9-Octadecenoic acid, methyl ester, (E)-	
+25	25.811	25.782	25.872	TIC	12741652	4564361	2.79	0.15	   	1-Phenethylamino-3-(1,2,3,4-tetrahydro-carbazol-9-yl)-propan-2-ol	
+26	25.956	25.872	26.051	TIC	752228645	201704518	3.73	8.83	   	Methyl stearate	
+27	26.786	26.684	26.866	TIC	138634935	30848634	4.49	1.63	   	Bicyclo[4.1.0]heptane, 7-(phenylmethylene)-	
+28	26.905	26.866	26.979	TIC	21177191	5094915	4.16	0.25	 V 	1-Methyl-10,18-bisnorabieta-8,11,13-triene	
+29	27.248	27.188	27.354	TIC	26158941	6367644	4.11	0.31	   	1-Phenanthrenemethanol, 1,2,3,4,4a,9,10,10a-octahydro-1-methyl-, [1S-(1.alpha.,4a.alpha.,10a.beta.)]-	
+30	27.466	27.406	27.562	TIC	20157089	4043430	4.99	0.24	   	9,12-Octadecadienoic acid (Z,Z)-, methyl ester	
+31	27.724	27.562	27.797	TIC	39389853	8775268	4.49	0.46	   	Pentatriacontane	
+32	29.012	28.928	29.102	TIC	33782201	9132846	3.70	0.40	   	Octanamide, N,N-dimethyl-	
+33	29.298	29.215	29.381	TIC	27360807	6553244	4.18	0.32	   	5,8,11,14,17-Eicosapentaenoic acid, methyl ester, (all-Z)-	
+34	30.143	30.094	30.294	TIC	33935964	7310131	4.64	0.40	   	Eicosane	
+35	30.454	30.346	30.555	TIC	59361079	12309654	4.82	0.70	   	4H-Chromene, 4a,5,6,7,8,8a-hexahydro-2,3,5,5,8a-pentamethyl	
+36	31.115	31.051	31.190	TIC	25519623	6849683	3.73	0.30	   	Methyl dehydroabietate	
+37	31.596	31.477	31.721	TIC	106266960	20084766	5.29	1.25	   	5,2,1,6,3,4-[2,3]Butanediyl[1,4]diylidenedipentaleno[2,1,6-cde:2',1',6'-gha]pentalene, hexadecahydro-	
+38	31.933	31.851	32.025	TIC	24462465	6429650	3.80	0.29	   	Octa-2,4,6-triene, 2,7-diphenyl-	
+39	32.457	32.365	32.591	TIC	75810750	15884813	4.77	0.89	   	Hexanedioic acid, bis(2-ethylhexyl) ester	
+40	33.177	33.096	33.287	TIC	31023918	6776486	4.58	0.36	   	N,N-Dimethyldecanamide	
+41	33.828	33.765	33.974	TIC	34888054	7110265	4.91	0.41	   	Octanamide, N,N-dimethyl-	
+42	34.748	34.670	34.870	TIC	29600569	6582806	4.50	0.35	   	Tetratetracontane	
+

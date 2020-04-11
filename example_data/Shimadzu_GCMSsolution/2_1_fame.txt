@@ -1,0 +1,26 @@
+[Header]
+Data File Name	C:\GCMSsolution\Data\Project1\240220\240220\2-1.cdf
+Output Date	4/9/2020
+Output Time	12:48:45 PM
+
+[MC Peak Table]
+# of Peaks	16
+Mass	TIC
+Peak#	Ret.Time	Proc.From	Proc.To	Mass	Area	Height	A/H	Conc.	Mark	Name	Ret. Index
+1	2.733	2.724	2.747	TIC	7733733	6072638	1.27	0.16	   		
+2	2.781	2.747	2.805	TIC	402611790	175970301	2.29	8.38	 V 	3-Hexanone	
+3	2.824	2.805	2.837	TIC	272228570	187293353	1.45	5.66	 V 	3-Hexanone	
+4	2.866	2.837	2.875	TIC	456096465	220610614	2.07	9.49	 V 	Nonane, 4,5-dimethyl-	
+5	2.885	2.875	2.898	TIC	312171123	227129481	1.37	6.50	 V 	Nonane, 4,5-dimethyl-	
+6	2.923	2.898	3.008	TIC	1268485088	240235282	5.28	26.40	 V 	3-Hexanone	
+7	3.033	3.011	3.087	TIC	45312414	42044758	1.08	0.94	   	Heptane, 3-methyl-	
+8	3.261	3.234	3.284	TIC	385282949	309785009	1.24	8.02	   	Hexane, 2,3,3-trimethyl-	
+9	4.376	4.348	4.397	TIC	34922462	30250740	1.15	0.73	   	Nonane	
+10	18.432	18.335	18.610	TIC	1117986468	323943337	3.45	23.26	   	Pentadecanoic acid, methyl ester	
+11	20.360	20.307	20.446	TIC	15357561	4442020	3.46	0.32	   	Methyl hexadec-9-enoate	
+12	20.878	20.811	21.003	TIC	162986321	46624302	3.50	3.39	   	Hexadecanoic acid, methyl ester	
+13	23.398	23.317	23.491	TIC	15750755	4137738	3.81	0.33	   	Heptadecanoic acid, methyl ester	
+14	25.415	25.361	25.535	TIC	29959437	6392119	4.69	0.62	   	9-Octadecenoic acid, methyl ester, (E)-	
+15	25.901	25.814	26.040	TIC	247046601	61515000	4.02	5.14	   	Methyl stearate	
+16	29.297	29.198	29.424	TIC	31699223	5580604	5.68	0.66	   	5,8,11,14,17-Eicosapentaenoic acid, methyl ester, (all-Z)-	
+

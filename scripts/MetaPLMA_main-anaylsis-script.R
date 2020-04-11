@@ -13,8 +13,6 @@ lapply(list.of.packages, require, character.only=T)
 
 # Step 0.2: Define global variables 
 
-df <- here("data", "raw_foofy_data.csv")
-
 # Date
 date <- format(Sys.Date(), format="%Y-%m-%d")
 # GUI to allow user to selection working directory
@@ -152,7 +150,11 @@ if(file_format == "pdf"){
 
 ## Step 1.2: read excel and convert to csv
 if(file_format == "xlsx"){
-  file.list <- lapply(files, read.xlsx, sheet = 1, colNames = TRUE, skipEmptyRows = TRUE, skipEmptyCols = TRUE, na.strings = "NA")  
+  file.list <- lapply(files, read.xlsx, sheet = 1, rowNames = TRUE, colNames = TRUE, skipEmptyRows = TRUE, skipEmptyCols = TRUE, na.strings = "NA")  
+  
+  # Ask user whether input is in Shimatzu format
+  form <- tk_messageBox(type = "yesno", message = "Are the selected .xlsx files already in the standard 3 tab format. \n\nYES: Theses are manually curated files of correct format.  \n\nNo: These files are in Shimadzu format and need adjustment."
+                       , caption = "Question", default = "")
 }
 
 ## Step 1.3: load csv data    
@@ -162,8 +164,30 @@ if(file_format == "csv"){
 
 ## Step 1.4: load tsv or txt data    
 if(file_format == "tsv" | file_format == "txt"){
-  file.list <- lapply(files, read_tsv, col_names = TRUE)
+  file.list <- lapply(files, read_tsv, na = c("", "NA"), col_names = TRUE)
 }
+
+# check if data format needs correction 
+if(exists("form") & form != "yes"){
+  
+  ## correction of file.list data in case data is in Shimadzu ourput format:
+  for (file in 1:length(files)){
+    df <- file.list[[file]]
+    #adjust column names
+    colnames(df) <- df[7,]
+    # remove header lines
+    df = df[-(1:7),]
+    #correct column nmaes
+    df$RT <- df$Ret.Time
+    df$Response <- df$Area
+    df$Compound <- df$Name
+    #select required data
+    subset <- select(df, Compound, RT, Response)
+    #correct fil.list entry
+    file.list[[file]] <- subset
+  }
+}
+
 
 # Step 2: Load dry weight data (if existing)  
 
@@ -215,6 +239,17 @@ names(GCMS.raw) <- basename(files)
 for (file in 1:length(files)){
   # store raw data as list of dataframes
   GCMS.raw[[file]] <- file.list[[file]]
+  # create RT dependent in Compound names in case they are NA entries
+  for (row in 1:nrow(GCMS.raw[[file]])){
+    #check if Compound name is = NA
+    if(is.na(GCMS.raw[[file]]$Compound[row])){
+      # name with retention time
+      GCMS.raw[[file]]$Compound[row] <- as.character(GCMS.raw[[file]]$RT[row])
+    } 
+  }
+  # RT and Response as numeric 
+  GCMS.raw[[file]]$RT <- as.numeric(GCMS.raw[[file]]$RT)
+  GCMS.raw[[file]]$Response <- as.numeric(GCMS.raw[[file]]$Response)
   # store only Compound and RT raw data as list of dataframes
   GCMS.raw.RT[[file]] <- select(GCMS.raw[[file]], Compound, RT)
   # store only Compound and Response raw data as list of dataframes
@@ -242,6 +277,10 @@ matrix.RT.ordered$SD <- rowSds(as.matrix(matrix.RT.ordered[2:length(matrix.RT.or
 #matrix.RT.ordered[is.na(matrix.RT.ordered)] <- ''
 #matrix.Resp.ordered[is.na(matrix.Resp.ordered)] <- ''
 
+# replace NA values
+matrix.Resp.ordered.NA <- matrix.Resp.ordered
+matrix.Resp.ordered.NA[is.na(matrix.Resp.ordered.NA)] <- '0'
+
 
 # Step 4: normalise response data by dry weights
 
@@ -263,6 +302,10 @@ if (exists("dw.file.info")){
     }
   }
 }
+
+# replace NA values
+matrix.Resp.ordered.norm.NA <- matrix.Resp.ordered.norm
+matrix.Resp.ordered.norm.NA[is.na(matrix.Resp.ordered.norm.NA)] <- '0'
 
 
 # Step 5: Convert Compound names into metabolites
@@ -354,11 +397,15 @@ if (exists("matrix.Resp.ordered.norm")){
 #Step 8.2: Save as .xlsx file
 wb = createWorkbook()
 addWorksheet(wb, "Responses")
+addWorksheet(wb, "Responses.NA")
 addWorksheet(wb, "Retention_times")
 writeData(wb, sheet = 1, matrix.Resp.ordered)
-writeData(wb, sheet = 2, matrix.RT.ordered)
+writeData(wb, sheet = 2, matrix.Resp.ordered.NA)
+writeData(wb, sheet = 3, matrix.RT.ordered)
 if (exists("matrix.Resp.ordered.norm")){
   addWorksheet(wb, "Responses_normalised")
-  writeData(wb, sheet = 3, matrix.Resp.ordered.norm)
+  writeData(wb, sheet = 4, matrix.Resp.ordered.norm)
+  addWorksheet(wb, "Responses_normalised.NA")
+  writeData(wb, sheet = 5, matrix.Resp.ordered.norm.NA)
 }
 saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
