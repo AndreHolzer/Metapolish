@@ -191,7 +191,7 @@ if(exists("form") & form != "yes"){
 
 # Step 2: Load dry weight data (if existing)  
 
-# GUI to allow user to select file cnating weights
+# GUI to allow user to select file contaning weights
 filters <- matrix(c("All accepted",".tsv .txt .csv .xlsx", "Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 5, 2, byrow = TRUE)
 dw.file <- tk_choose.files(caption = "File with dry weight data for normalisation", multi = FALSE, filter = filters)
 
@@ -243,8 +243,13 @@ for (file in 1:length(files)){
   for (row in 1:nrow(GCMS.raw[[file]])){
     #check if Compound name is = NA
     if(is.na(GCMS.raw[[file]]$Compound[row])){
-      # name with retention time
-      GCMS.raw[[file]]$Compound[row] <- as.character(GCMS.raw[[file]]$RT[row])
+      # name as Unknown + retention time
+      GCMS.raw[[file]]$Compound[row] <- str_c("Unknown_",as.character(GCMS.raw[[file]]$RT[row]))
+    } 
+    # check if Compound name is similar a douplicate
+    if(duplicated(GCMS.raw[[file]]$Compound)[row]){
+      # add retention time to name
+      GCMS.raw[[file]]$Compound[row] <- str_c(GCMS.raw[[file]]$Compound[row]," - RT:",as.character(GCMS.raw[[file]]$RT[row]))
     } 
   }
   # RT and Response as numeric 
@@ -290,10 +295,10 @@ if (exists("dw.file.info")){
   matrix.Resp.ordered.norm <- matrix.Resp.ordered
   # initizalise row count
   row <- 0
-  # loop through all entries 
+  # loop through all entries
   for(c in dw.file.info$Sample){
     row <- row + 1
-    # loop through all columns 
+    # loop through all columns
     for(col in 2:ncol(matrix.Resp.ordered)){
       # check if data and column name matches
       if(c == colnames(matrix.Resp.ordered[col])){
@@ -301,19 +306,53 @@ if (exists("dw.file.info")){
       }
     }
   }
+  
+  # replace NA values
+  matrix.Resp.ordered.norm.NA <- matrix.Resp.ordered.norm
+  matrix.Resp.ordered.norm.NA[is.na(matrix.Resp.ordered.norm.NA)] <- '0'
+  
+  matrix.Resp.ordered.rename <- matrix.Resp.ordered.norm
+} else {
+  matrix.Resp.ordered.rename <- matrix.Resp.ordered
 }
-
-# replace NA values
-matrix.Resp.ordered.norm.NA <- matrix.Resp.ordered.norm
-matrix.Resp.ordered.norm.NA[is.na(matrix.Resp.ordered.norm.NA)] <- '0'
 
 
 # Step 5: Convert Compound names into metabolites
 
-
-# Step 6: Sort and condense matrix  
-
-
+  ## Step 5.1: Shorten Compound names
+  # seperate Compound names and RT time for mutiple variants (RT matrix)
+  matrix.RT.ordered.rename <- separate(matrix.RT.ordered, Compound, into = c("Name", "RT.variant"), sep="-\\sRT:", remove = FALSE) %>%
+    # seperate Name after first comma behind a word
+    separate(Name, into = c("Name"), sep=",\\s", remove = TRUE) %>%
+    # remove "Methyl" from start of Name
+    mutate(Name = str_replace(Name, pattern = "^Methyl", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "^methyl", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "\\s$", '')) 
+  
+  # seperate Compound names and RT time for mutiple variants (Resp matrix)
+  matrix.Resp.ordered.rename <- separate(matrix.Resp.ordered.rename, Compound, into = c("Name", "RT.variant"), sep="-\\sRT:", remove = FALSE) %>%
+    # seperate Name after first comma behind a word
+    separate(Name, into = c("Name"), sep=",\\s", remove = TRUE) %>%
+    # remove "Methyl" from start of Name
+    mutate(Name = str_replace(Name, pattern = "^Methyl", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "^methyl", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
+    mutate(Name = str_replace(Name, pattern = "\\s$", ''))
+  
+  # Step 5.2: Add KEGG and CAT IDs
+  
+  
+  
+# Step 6: Sort and condense matrixes
+  
+  # Step 6.1: Sort matrix
+  matrix.RT.ordered.rename.sorted <- arrange(matrix.RT.ordered.rename , Name)
+  matrix.Resp.ordered.rename.sorted <- arrange(matrix.Resp.ordered.rename, Name)
+  
+  # Step 6.2: Condense matrix by adding up intensities of identical compounds
+  
+  
 # Step 7: Plot data 
 
 # create output dir
@@ -407,5 +446,14 @@ if (exists("matrix.Resp.ordered.norm")){
   writeData(wb, sheet = 4, matrix.Resp.ordered.norm)
   addWorksheet(wb, "Responses_normalised.NA")
   writeData(wb, sheet = 5, matrix.Resp.ordered.norm.NA)
+  addWorksheet(wb, "Retention_times.renamed")
+  writeData(wb, sheet = 6, matrix.RT.ordered.rename.sorted)
+  addWorksheet(wb, "Responses_normalised.renamed")
+  writeData(wb, sheet = 7, matrix.Resp.ordered.rename.sorted)
+} else {
+  addWorksheet(wb, "Retention_times.renamed")
+  writeData(wb, sheet = 4, matrix.RT.ordered.rename.sorted)
+  addWorksheet(wb, "Responses.renamed")
+  writeData(wb, sheet = 5, matrix.Resp.ordered.rename.sorted)
 }
 saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
