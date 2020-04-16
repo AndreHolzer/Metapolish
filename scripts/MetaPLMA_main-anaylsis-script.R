@@ -1,5 +1,5 @@
 # Things to do:
-#  - Integrate compound to metabolite conversion
+#  - Integrate binning and summary of identical compounds!
 #  - Integrate command line operation
 
 # Step 0: Initialise 
@@ -23,6 +23,7 @@ outfolder <- file.path(str_c(date,"_GCSM-analysis-results"))
 # create output dir
 dir.create(outfolder)
 
+
 # Step 1: Select input files (pdf, excel, tsv or csv files)
 
 # GUI to allow user selection
@@ -45,6 +46,9 @@ for (file in 1:length(files)){
     stop(str_c("Inconsitent file extensions. All files must be of same file format."))
   }
 } 
+
+# define form variable
+form <- "yes"
 
 ## Step 1.1: read pdf and convert to tsv
 if(file_format == "pdf"){
@@ -286,7 +290,6 @@ matrix.RT.ordered$SD <- rowSds(as.matrix(matrix.RT.ordered[2:length(matrix.RT.or
 matrix.Resp.ordered.NA <- matrix.Resp.ordered
 matrix.Resp.ordered.NA[is.na(matrix.Resp.ordered.NA)] <- '0'
 
-
 # Step 4: normalise response data by dry weights
 
 # check if dry weight data exists
@@ -330,6 +333,29 @@ if (exists("dw.file.info")){
     mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
     mutate(Name = str_replace(Name, pattern = "\\s$", '')) 
   
+  # remove additional junk 
+  matrix.RT.ordered.rename <- separate(matrix.RT.ordered.rename, Name, into = c("Junk1","Junk2","Junk3","Junk4","Junk5","Name.alt"), sep="_", remove = FALSE) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\[", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\]$", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\s", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s$", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s\\([1-9]{1,2}TMS\\).*", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\[NA\\]", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^[a-z]{1}$", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^[A-Z]{1}$", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^$", "NA"))
+  
+  for (row in 1:nrow(matrix.RT.ordered.rename)){
+    if(!is.na(matrix.RT.ordered.rename$Name.alt[row])){
+      if(matrix.RT.ordered.rename$Name.alt[row] != "NA"){
+        matrix.RT.ordered.rename$Name[row] <- matrix.RT.ordered.rename$Name.alt[row]
+      }
+    }
+  }
+  
+  matrix.RT.ordered.rename <- select(matrix.RT.ordered.rename, -Junk1,-Junk2,-Junk3,-Junk4,-Junk5,-Name.alt)
+  
+  
   # seperate Compound names and RT time for mutiple variants (Resp matrix)
   matrix.Resp.ordered.rename <- separate(matrix.Resp.ordered.rename, Compound, into = c("Name", "RT.variant"), sep="-\\sRT:", remove = FALSE) %>%
     # seperate Name after first comma behind a word
@@ -339,6 +365,29 @@ if (exists("dw.file.info")){
     mutate(Name = str_replace(Name, pattern = "^methyl", '')) %>%
     mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
     mutate(Name = str_replace(Name, pattern = "\\s$", ''))
+  
+  # remove additional junk 
+  matrix.Resp.ordered.rename <- separate(matrix.Resp.ordered.rename, Name, into = c("Junk1","Junk2","Junk3","Junk4","Junk5","Name.alt"), sep="_", remove = FALSE) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\[", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\]$", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\s", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s$", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s\\([1-9]{1,2}TMS\\).*", '')) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "\\[NA\\]", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^[a-z]{1}$", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^[A-Z]{1}$", "NA")) %>%
+    mutate(Name.alt = str_replace(Name.alt, pattern = "^$", "NA"))
+  
+  for (row in 1:nrow(matrix.Resp.ordered.rename)){
+    if(!is.na(matrix.Resp.ordered.rename$Name.alt[row])){
+      if(matrix.Resp.ordered.rename$Name.alt[row] != "NA"){
+        matrix.Resp.ordered.rename$Name[row] <- matrix.Resp.ordered.rename$Name.alt[row]
+      }
+    }
+  }
+  
+  matrix.Resp.ordered.rename <- select(matrix.Resp.ordered.rename, -Junk1,-Junk2,-Junk3,-Junk4,-Junk5,-Name.alt)
+  
   
   # Step 5.2: Add KEGG and CAT IDs
   
@@ -426,14 +475,18 @@ ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.
 # create output dir
 dir.create(file.path(outfolder,"results"))  
 
-#Step 8.1: Save as .tsv files
+#Step 8.1: replace NA values
+matrix.Resp.ordered.rename.sorted.NA <- matrix.Resp.ordered.rename.sorted
+matrix.Resp.ordered.rename.sorted.NA[is.na(matrix.Resp.ordered.rename.sorted.NA)] <- '0'
+
+#Step 8.2: Save as .tsv files
 write.table(matrix.RT.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Retention-Times.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 write.table(matrix.Resp.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Responses.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 if (exists("matrix.Resp.ordered.norm")){
   write.table(matrix.Resp.ordered.norm, file.path(outfolder,"results",paste0(date,"_GCMS_Responses_normalised.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 }
 
-#Step 8.2: Save as .xlsx file
+#Step 8.3: Save as .xlsx file
 wb = createWorkbook()
 addWorksheet(wb, "Responses")
 addWorksheet(wb, "Responses.NA")
@@ -450,10 +503,14 @@ if (exists("matrix.Resp.ordered.norm")){
   writeData(wb, sheet = 6, matrix.RT.ordered.rename.sorted)
   addWorksheet(wb, "Responses_normalised.renamed")
   writeData(wb, sheet = 7, matrix.Resp.ordered.rename.sorted)
+  addWorksheet(wb, "Responses_normalised.renamed")
+  writeData(wb, sheet = 8, matrix.Resp.ordered.rename.sorted.NA)
 } else {
   addWorksheet(wb, "Retention_times.renamed")
   writeData(wb, sheet = 4, matrix.RT.ordered.rename.sorted)
   addWorksheet(wb, "Responses.renamed")
   writeData(wb, sheet = 5, matrix.Resp.ordered.rename.sorted)
+  addWorksheet(wb, "Responses_normalised.renamed")
+  writeData(wb, sheet = 6, matrix.Resp.ordered.rename.sorted.NA)
 }
 saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
