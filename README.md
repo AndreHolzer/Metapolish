@@ -171,8 +171,3 @@ If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com
 
 We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
 
-
-
-#### License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
