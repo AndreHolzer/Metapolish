@@ -157,7 +157,7 @@ If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com
 
 ## Citation
 
-**If you use or adopt this pipeline for your analysis, cite it as follows :**
+**If you use this pipeline for your analysis, please don't forget to cite:**
 
 **DOI: …**
 
