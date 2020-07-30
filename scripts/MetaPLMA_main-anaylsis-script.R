@@ -1,11 +1,6 @@
-# Things to do:
-#  - Integrate binning and summary of identical compounds!
-#  - Integrate command line operation
+# Step 0: Initialise ----
 
-# Step 0: Initialise 
-
-#Step 0.1: Load packages
-
+# Step 0.1: Load packages ----
 list.of.packages = c("here","tidyverse","knitr","tcltk","readxl","matrixStats","openxlsx","tools","stringr","utils","pdftools","ggplot2","ggpubr","BBmisc","ggsci","scales","RColorBrewer","devtools","RJSONIO","httr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages) > 0) {install.packages(new.packages)}
@@ -198,7 +193,7 @@ if(file_format == "tsv" | file_format == "txt"){
 # check if data format needs correction 
 if(exists("form") & form != "yes"){
   
-  ## correction of file.list data in case data is in Shimadzu ourput format:
+  ## correction of file.list data in case data is in Shimadzu output format:
   for (file in 1:length(files)){
     df <- file.list[[file]]
     #adjust column names
@@ -355,7 +350,7 @@ for (i in 1:nrow(matrix.RT.ordered)){
       tempRT.2[1,-pos[p]] <- NA 
       tempResp.2[1,-pos[p]] <- NA 
       tempRT.2[1,1] <- str_c(matrix.RT.ordered[i,1]," - RT:",matrix.RT.ordered[i,pos[p]])
-      tempResp.2[1,1] <- str_c(matrix.Resp.ordered[i,1]," - RT:",matrix.Resp.ordered[i,pos[p]])
+      tempResp.2[1,1] <- str_c(matrix.Resp.ordered[i,1]," - RT:",matrix.RT.ordered[i,pos[p]])
       df.RT.ordered <- rbind(df.RT.ordered,tempRT.2)
       df.Resp.ordered <- rbind(df.Resp.ordered,tempResp.2)
     }
@@ -396,11 +391,9 @@ if (exists("dw.file.info")){
       }
     }
   }
-  
   # replace NA values
   df.Resp.ordered.norm.NA <- df.Resp.ordered.norm
   df.Resp.ordered.norm.NA[is.na(df.Resp.ordered.norm.NA)] <- 0
-  
   df.Resp.ordered.rename <- df.Resp.ordered.norm
 } else {
   df.Resp.ordered.rename <- df.Resp.ordered
@@ -603,82 +596,150 @@ if (exists("dw.file.info")){
   # add first line as well
   df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine,df.RT.ordered.rename.sorted.temp[1,])
   df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[1,])
+  # correct mean and sd of Retention times and add to Resp data as well
+  df.RT.ordered.rename.fine$Mean <- rowMeans(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)], na.rm = TRUE)
+  df.RT.ordered.rename.fine$SD <- rowSds(as.matrix(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)]), na.rm = TRUE)
+  df.Resp.ordered.rename.fine$Mean <- df.RT.ordered.rename.fine$Mean
+  df.Resp.ordered.rename.fine$SD <- df.RT.ordered.rename.fine$SD
   # Sort dataframes by RT and names
   df.RT.ordered.rename.fine.sorted <- arrange(df.RT.ordered.rename.fine , Mean, Name)
   df.Resp.ordered.rename.fine.sorted <- arrange(df.Resp.ordered.rename.fine , Mean, Name)
-  # correct mean and sd of Retention times and add to Resp data as well
-  df.RT.ordered.rename.fine.sorted$Mean <- rowMeans(df.RT.ordered.rename.fine.sorted[2:(length(df.RT.ordered.rename.fine.sorted)-10)], na.rm = TRUE)
-  df.RT.ordered.rename.fine.sorted$SD <- rowSds(as.matrix(df.RT.ordered.rename.fine.sorted[2:(length(df.RT.ordered.rename.fine.sorted)-10)]), na.rm = TRUE)
-  df.Resp.ordered.rename.fine.sorted$Mean <- df.RT.ordered.rename.fine.sorted$Mean
-  df.Resp.ordered.rename.fine.sorted$SD <- df.RT.ordered.rename.fine.sorted$SD
   
-  # same name/metabolite different RT (coarse scale)
+  # same metabolite different RT (coarse scale 1)
   # initialise dataframe
-  df.RT.ordered.rename.coarse <- data.frame()
-  df.Resp.ordered.rename.coarse <- data.frame()
-  # create temporary dataframe 
-  df.RT.ordered.rename.sorted.coarse.temp <- arrange(df.RT.ordered.rename.fine.sorted, Name, Metabolite, Mean)
-  df.Resp.ordered.rename.sorted.coarse.temp <- arrange(df.Resp.ordered.rename.fine.sorted, Name, Metabolite, Mean)
-  
-  df.Resp.ordered.rename.coarse.name <- df.Resp.ordered.rename.sorted.coarse.temp %>% 
-    group_by(Name) %>%
-    summarise_at(vars(2:(ncol(df.Resp.ordered.rename.sorted.coarse.temp)-10)), sum, na.rm = TRUE)
-  
-  df.RT.mean <- df.RT.ordered.rename.sorted.coarse.temp %>% 
-    group_by(Name) %>%
-    summarise_at(vars(Mean), mean, na.rm = TRUE)
-  
-  df.RT.sd.new <- df.RT.ordered.rename.sorted.coarse.temp %>% 
-    group_by(Name) %>%
-    summarise_at(vars(Mean), sd, na.rm = TRUE)
-  
-  df.RT.sd.old <- df.RT.ordered.rename.sorted.coarse.temp %>% 
-    group_by(Name) %>%
-    summarise_at(vars(SD), sum, na.rm = TRUE)
-  
-  summarise_all(funs(trimws(paste(., collapse = '; '))))
-  summarise_at(c("Mean"), mean, na.rm = TRUE)
-  
+  df.RT.ordered.rename.coarse1 <- data.frame()
+  df.Resp.ordered.rename.coarse1 <- data.frame()
+  # create temporary dataframe (RT)
+  df.RT.ordered.rename.sorted.coarse1.temp <- arrange(df.RT.ordered.rename.fine.sorted, Metabolite, Name, Mean)
+  # change <double> to <character>
+  df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)] <- data.frame(lapply(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)], as.character), stringsAsFactors=FALSE)
+  # replace NA values by "-"
+  df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)][is.na(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)])] <- ""
+  # create temporary dataframe (Resp)
+  df.Resp.ordered.rename.sorted.coarse1.temp <- arrange(df.Resp.ordered.rename.fine.sorted, Metabolite, Name, Mean)
   # loop over all rows
-  for (i in nrow(df.RT.ordered.rename.sorted.temp):2){
-    # check if Name and RT are not NA
-    if (!is.na(df.RT.ordered.rename.sorted.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Name[i-1]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i-1])){
-      # check if Name is similar to the one above and RT not more different than 0.2
-      if(abs(df.RT.ordered.rename.sorted.temp$Mean[i]-df.RT.ordered.rename.sorted.temp$Mean[i-1])<=0.2 & df.RT.ordered.rename.sorted.temp$Name[i] == df.RT.ordered.rename.sorted.temp$Name[i-1]){
+  for (i in nrow(df.RT.ordered.rename.sorted.coarse1.temp):2){
+    # check if Metabolite name and RT are not NA
+    if (!is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i-1])){
+      # check if Metabolite is similar to the one above
+      if(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i] == df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]){
+        # all RT values to add
+        values.RT<- df.RT.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)]
         # position of non NA values to add
-        NonNAindex.RT<- which(!is.na(df.RT.ordered.rename.sorted.temp[i,2:(ncol(df.RT.ordered.rename.sorted.temp)-10)]))
-        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.temp)-10)]))
-        # loop over all positions and add non NA values to previous row (for RT)
-        for (r in 1:length(NonNAindex.RT)){
-          if (is.na(df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)])){
-            df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
-          } else {
-            df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
-            message(str_c("WARNING for row ",i,": Compound name: ", df.RT.ordered.rename.sorted.temp[i,1]," Some RT values where overwritten during fine scale merging process! Please check intermediate files for details."))
-          }
+        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse1.temp)-10)]))
+        # loop over all positions and add RT values to previous row (for RT)
+        for (r in 1:length(values.RT)){
+          df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse1.temp[i,r+1])
         }
         # loop over all positions and add non NA values to previous row as well as sums (for Resp)
         for (r in 1:length(NonNAindex.Resp)){
-          if (is.na(df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)])){
-            df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
+          if (is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)])){
+            df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
           } else {
-            df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
-            message(str_c("WARNING for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.temp[i,1]," Some Response values where summed up during fine scale merging process! Please check intermediate files for details."))
+            df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
+            message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse1.temp[i,1]," Some Response values where summed up during coarse1 scale merging process! Please check intermediate files for details."))
           }
         }
       } else {
         # add adjusted row to new dataframe
-        df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine, df.RT.ordered.rename.sorted.temp[i,])
-        df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[i,])
+        df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1, df.RT.ordered.rename.sorted.coarse1.temp[i,])
+        df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[i,])
       }
     } else {
       # add adjusted row to new dataframe
-      df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine, df.RT.ordered.rename.sorted.temp[i,])
-      df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[i,])
+      df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1, df.RT.ordered.rename.sorted.coarse1.temp[i,])
+      df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[i,])
     }
   }
+  # add first line as well
+  df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1,df.RT.ordered.rename.sorted.coarse1.temp[1,])
+  df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[1,])
+  # separate sample RTs to calculate mean and SD for each row
+  # loop over all rows
+  for (i in 1:nrow(df.RT.ordered.rename.coarse1)){
+    # initialise row RT array
+    row.RT <- c()
+    # loop over all samples
+    for (j in 2:(length(df.RT.ordered.rename.coarse1)-10)){
+      # split entries, write into array and convert to <double>
+      row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse1[[i,j]], ";"))))
+      # correct mean and sd of Retention times and add to Resp data as well
+      df.RT.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
+      df.RT.ordered.rename.coarse1$SD[i] <-sd(row.RT, na.rm = TRUE)
+      df.Resp.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
+      df.Resp.ordered.rename.coarse1$SD[i] <- sd(row.RT, na.rm = TRUE)
+    }
+  }
+  # Sort dataframes by RT and names
+  df.RT.ordered.rename.coarse1.sorted <- arrange(df.RT.ordered.rename.coarse1 , Mean, Name)
+  df.Resp.ordered.rename.coarse1.sorted <- arrange(df.Resp.ordered.rename.coarse1 , Mean, Name)
   
-#########
+  # same name different RT (coarse scale 2)
+  # initialise dataframe
+  df.RT.ordered.rename.coarse2 <- data.frame()
+  df.Resp.ordered.rename.coarse2 <- data.frame()
+  # create temporary dataframe (RT)
+  df.RT.ordered.rename.sorted.coarse2.temp <- arrange(df.RT.ordered.rename.coarse1.sorted, Name)
+  # create temporary dataframe (Resp)
+  df.Resp.ordered.rename.sorted.coarse2.temp <- arrange(df.Resp.ordered.rename.coarse1.sorted, Name)
+  # loop over all rows
+  for (i in nrow(df.RT.ordered.rename.sorted.coarse2.temp):2){
+    # check if Metabolite name is not NA
+    if (!is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1])){
+      # check if Name is similar to the one above
+      if(df.RT.ordered.rename.sorted.coarse2.temp$Name[i] == df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1]){
+        # all RT values to add
+        values.RT<- df.RT.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse2.temp)-10)]
+        # position of non NA values to add
+        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse2.temp)-10)]))
+        # loop over all positions and add RT values to previous row (for RT)
+        for (r in 1:length(values.RT)){
+          df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse2.temp[i,r+1])
+        }
+        # loop over all positions and add non NA values to previous row as well as sums (for Resp)
+        for (r in 1:length(NonNAindex.Resp)){
+          if (is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)])){
+            df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
+          } else {
+            df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
+            message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse2.temp[i,1]," Some Response values where summed up during coarse2 scale merging process! Please check intermediate files for details."))
+          }
+        }
+      } else {
+        # add adjusted row to new dataframe
+        df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2, df.RT.ordered.rename.sorted.coarse2.temp[i,])
+        df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[i,])
+      }
+    } else {
+      # add adjusted row to new dataframe
+      df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2, df.RT.ordered.rename.sorted.coarse2.temp[i,])
+      df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[i,])
+    }
+  }
+  # add first line as well
+  df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2,df.RT.ordered.rename.sorted.coarse2.temp[1,])
+  df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[1,])
+  # separate sample RTs to calculate mean and SD for each row
+  # loop over all rows
+  for (i in 1:nrow(df.RT.ordered.rename.coarse2)){
+    # initialise row RT array
+    row.RT <- c()
+    # loop over all samples
+    for (j in 2:(length(df.RT.ordered.rename.coarse2)-10)){
+      # split entries, write into array and convert to <double>
+      row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse2[[i,j]], ";"))))
+      # correct mean and sd of Retention times and add to Resp data as well
+      df.RT.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
+      df.RT.ordered.rename.coarse2$SD[i] <-sd(row.RT, na.rm = TRUE)
+      df.Resp.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
+      df.Resp.ordered.rename.coarse2$SD[i] <- sd(row.RT, na.rm = TRUE)
+    }
+  }
+  # Sort dataframes by RT and names
+  df.RT.ordered.rename.coarse2.sorted <- arrange(df.RT.ordered.rename.coarse2 , Mean, Name)
+  df.Resp.ordered.rename.coarse2.sorted <- arrange(df.Resp.ordered.rename.coarse2 , Mean, Name)
+  
+#########Test
   
 # Step 7: Plot data 
   
@@ -795,7 +856,11 @@ saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-resul
 
 
 
-################ Work in Progress ######################
+# Work in Progress
+# Things to do:
+#  - Integrate binning and summary of identical compounds!
+#  - Integrate command line operation
+
 #
 # # add CAS
 # # initialise CAS column 
