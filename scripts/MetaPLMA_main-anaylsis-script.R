@@ -1,4 +1,7 @@
 ### Step 0: Initialise (mandatory) ----
+cat("=============================\n")
+cat("Step 0: Initialise (mandatory)\n")
+cat("=============================\n")
 
 ## Step 0.1: Load packages ----
 
@@ -18,17 +21,29 @@ wd <- tk_choose.dir(here(), caption = "Select your working directory")
 setwd(wd)
 # Name of the output directory (will be created in your current working directory)
 outfolder <- file.path(str_c(date,"_GCSM-analysis-results"))
+# remove existing outfolder with same name
+unlink(outfolder, recursive = TRUE, force = FALSE)
 # create output dir
 dir.create(outfolder, showWarnings = FALSE)
 
+# report step
+message(str_c("\nINFO: Initialisation completed successfully"))
+
 
 ### Step 1: Read peak data input files (mandatory) ----
+cat("\n\n=============================\n")
+cat("Step 1: Read peak data input files (mandatory) \n")
+cat("=============================\n")
+
 
 ## Step 1.1: Select input files (pdf, excel, tsv or csv files) ----
 
 # GUI to allow user selection
 filters <- matrix(c("All accepted",".pdf .tsv .csv .xlsx .txt", "PDF files",".pdf","Comma seperated files",".csv","Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 7, 2, byrow = TRUE)
 files <- tk_choose.files(caption = "Choose GCMS files to analyse", multi = TRUE, filter = filters)
+
+# report step
+message(str_c("\nINFO: Loading the following sample file: ", files))
 
 # identify file type by extension
 ext <- file_ext(files)
@@ -51,6 +66,8 @@ for (file in 1:length(files)){
 
 # if file format is pdf
 if(file_format == "pdf"){
+  # initialise file.list
+  file.list <- c()
   # loop over all input files
   for (file in 1:length(files)){
     # read pdf file and split into rows
@@ -111,27 +128,51 @@ if(file_format == "pdf"){
         if(run > 1){
           final.table <- rbind(final.table, page.text.df.final)
         }
-        # create output dir
-        dir.create(file.path(outfolder,"pdf2tsv"), showWarnings = FALSE)
-        # save extracted data from pdf file as .tsv file
-        write.table(final.table, file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-        # report file generation
-        message(str_c("Data was extracted from .pdf files and stored in .tsv format under: ",file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv"))))
       }
     }
-    # concatenate tables from different files into list format
-    file.list <- c()
-    file.list[[file]] <- final.table 
+    #correct data shift by rows in final table
+    # initialise array of rows to be removed
+    keep <- c()
+    # loop over all rows
+    for (i in 2: nrow(final.table)){
+      # if compound name is missing in row i but existing in the one above
+      if (final.table$Compound[i] == "" & final.table$Compound[(i-1)] != ""){
+        # if the opposite is true for RT and Response values
+        if(is.na(final.table$RT[i-1]) & is.na(final.table$Response[i-1]) & !is.na(final.table$RT[i]) & !is.na(final.table$Response[i])){
+          # copy RT and Resp values to row above and correct row shift
+          final.table$RT[i-1] <- final.table$RT[i]
+          final.table$Response[i-1] <- final.table$Response[i]
+        } 
+      } else {
+        # save row number to keep after
+        keep <- c(keep,i)  
+      }
+    }
+    # remove rows created due to shift
+    final.table.corrected <- slice(final.table,keep) 
+    
+    # create output dir
+    dir.create(file.path(outfolder,"pdf2tsv"), showWarnings = FALSE)
+    # save extracted data from pdf file as .tsv file
+    write.table(final.table.corrected, file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+    # report file generation
+    message(str_c("\nINFO: Data was extracted from .pdf files and stored in .tsv format under: ",file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv"))))
+    # add table to file.list
+    file.list[[file]] <- final.table.corrected 
   }
   
   # Inform user about pdf to tsv conversion and ask if data looks good to proceed (GUI)
-  out <- tk_messageBox(type = "yesnocancel", message = "Note: .pdf to .tsv conversion completed successfully. \n\nPlease check the created .tsv files. \n\nDo they contain the correct information? \n\n(Yes: Analysis will be continued) \n(No: Please adjust .tsv files and restart)"
+  out <- tk_messageBox(type = "yesnocancel", message = str_c("Note: .pdf to .tsv conversion completed successfully. \n\nPlease check the created .tsv files under:  ",file.path(outfolder,"pdf2tsv"),"\n\nDo they contain the correct information? \n\n(Yes: Analysis will be continued) \n(No: Please adjust .tsv files and restart)")
                        , caption = "Question", default = "")
   
   # if data as not okay or question was canceled stop program 
-  if(out != TRUE | is.na(out)){
-    stop(str_c("Program was stopped to be restarted with the adjusted .tsv files."))
+  if(out != "yes" | is.na(out)){
+    stop(str_c("\n INFO: Program was stopped to be restarted with the adjusted .tsv files."))
+  } else {
+    # report file generation
+    message(str_c("\nINFO: Anaylsis was continued with automatically converted pdf2tsv files"))
   }
+  
 }
 
 
@@ -165,6 +206,11 @@ if(file_format == "xlsx"){
       #correct file.list entry
       file.list[[file]] <- subset
     }
+    # report step
+    message(str_c("\nINFO: Data was corrected for Shimadzu output format"))
+  } else {
+    # report step
+    message(str_c("\nINFO: Data was NOT corrected for Shimadzu output format"))
   }
 }
 
@@ -180,8 +226,15 @@ if(file_format == "tsv" | file_format == "txt"){
   file.list <- lapply(files, read_tsv, na = c("", "NA"), col_names = TRUE)
 }
 
+# report step
+message(str_c("\nINFO: Sample data was read in successfully"))
+
 
 ### Step 2: Load dry weight data (optional) ----
+cat("\n\n=============================\n")
+cat("Step 2: Load dry weight data (optional)\n")
+cat("=============================\n")
+
 
 # GUI to allow user to select file contaning weights
 filters <- matrix(c("All accepted",".tsv .txt .csv .xlsx", "Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 5, 2, byrow = TRUE)
@@ -189,14 +242,16 @@ dw.file <- tk_choose.files(caption = "File with dry weight data for normalisatio
 
 # select action based on user selection
 if (identical(dw.file, character(0))){
-  message(str_c("No file containing sample weight information was selected. Continued without normalisation!"))
+  message(str_c("\nINFO: No file containing sample weight information was selected. Continued without normalisation!"))
 } else {
+  # report step
+  message(str_c("\nINFO: Loading the following sample info file: ", dw.file))
   # identify file type by extension
   ext <- file_ext(dw.file)
   file_format <- unique(ext)
   # Report error if file format is wrong
   if(!(ext %in% c("xlsx","tsv","csv","txt")) ){
-    message(str_c("Incorrect extension of file ",dw.file,". Only files of supported format (.xlsx,.tsv,.csv,.txt). Continued without normalisation."))
+    message(str_c("\nERROR: Incorrect extension of file ",dw.file,". Only files of supported format (.xlsx,.tsv,.csv,.txt). Continued without normalisation."))
   }
   
   
@@ -216,11 +271,15 @@ if (identical(dw.file, character(0))){
   if(file_format == "tsv" | file_format == "txt"){
     dw.file.info <-  read_tsv(dw.file, col_names = TRUE)
   }
+  # report step
+  message(str_c("\nINFO: Sample info data was read in successfully"))
 }
 
 
 ### Step 3: Merge sample information into a matrix (mandatory) ----
-
+cat("\n\n=============================\n")
+cat("Step 3: Merge sample information into a matrix (mandatory)\n")
+cat("=============================\n")
 
 ## Step 3.1: Create matrix by merging files by metabolite names ----
 
@@ -277,10 +336,13 @@ matrix.RT.ordered$SD <- rowSds(as.matrix(matrix.RT.ordered[2:length(matrix.RT.or
 matrix.Resp.ordered.NA <- matrix.Resp.ordered
 matrix.Resp.ordered.NA[is.na(matrix.Resp.ordered.NA)] <- 0
 
+# report step
+message(str_c("\nINFO: Merging sample peak data into a matrix completed successfully"))
+
 # Section 3.1 outputs:
-# matrix.RT.ordered
-# matrix.Resp.ordered
-# matrix.Resp.ordered.NA
+#matrix.RT.ordered
+#matrix.Resp.ordered
+#matrix.Resp.ordered.NA
 
 
 ## Step 3.2: Expand matrix for compounds with different RTs ----
@@ -293,7 +355,7 @@ df.Resp.ordered <- data.frame()
 # loop over all rows
 for (i in 1:nrow(matrix.RT.ordered)){
   # if SD is too high look for outliers that where merged
-  if (!is.na(matrix.RT.ordered$SD[i]) & matrix.RT.ordered$SD[i]>0.05){
+  if (!is.na(matrix.RT.ordered$SD[i]) & matrix.RT.ordered$SD[i]>0.1){
     # create position vector
     pos <- c()
     # find first !NA enry
@@ -347,6 +409,9 @@ df.Resp.ordered$SD <- df.RT.ordered$SD
 df.Resp.ordered.NA <- df.Resp.ordered
 df.Resp.ordered.NA[is.na(df.Resp.ordered.NA)] <- 0
 
+# report step
+message(str_c("\nINFO: Merging sample peak data into polished dataframe completed successfully"))
+
 # Section 3.2 outputs:
 # df.RT.ordered
 # df.Resp.ordered
@@ -354,6 +419,9 @@ df.Resp.ordered.NA[is.na(df.Resp.ordered.NA)] <- 0
 
 
 ### Step 4: Normalise response data by dry weights (optional) ----
+cat("\n\n=============================\n")
+cat("Step 4: Normalise response data by dry weights (optional)\n")
+cat("=============================\n")
 
 # check if dry weight data exists
 if (exists("dw.file.info")){
@@ -375,6 +443,11 @@ if (exists("dw.file.info")){
   # replace NA values
   df.Resp.ordered.norm.NA <- df.Resp.ordered.norm
   df.Resp.ordered.norm.NA[is.na(df.Resp.ordered.norm.NA)] <- 0
+  # report step
+  message(str_c("\nINFO: Normalise response data by dry weights completed successfully."))
+} else {
+  # report step
+  message(str_c("\nINFO: Normalise response data by dry weights was excluded due to missing sample info file."))
 }
 
 # Section 4 outputs:
@@ -383,6 +456,9 @@ if (exists("dw.file.info")){
 
 
 ### Step 5: Convert compound names into metabolites (mandatory) ----
+cat("\n\n=============================\n")
+cat("Step 5: Convert compound names into metabolites (mandatory)\n")
+cat("=============================\n")
 
 ## Step 5.1: Shorten compound names to potential metabolite names ----
   
@@ -438,7 +514,7 @@ dir.create(file.path(outfolder,"compound2metabolite"), showWarnings = FALSE)
 # write potential metabolite names in tsv file
 write.table(df.names$Name, file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv")), quote = F, col.names = F, row.names = F, sep = '\t', na = "")
 # report file generation
-message(str_c("Compound names were partically translated to potential metabolite names and list is stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv"))))
+message(str_c("\nINFO: Compound names were partically translated to potential metabolite names and list is stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv"))))
 
   
 ## Step 5.2: Add metabolite names, KEGG and CAT IDs using the MetaboAnalyst API ----
@@ -473,7 +549,7 @@ query_results <- as_tibble(query_results_table) %>%
 # write name metabolite conversion to file
 write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 # report file generation
-message(str_c("Compound names were translated to metabolite names using MetaboAnalysist API and results are stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv"))))
+message(str_c("\nINFO: Compound names were translated to metabolite names using MetaboAnalysist API and results are stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv"))))
 
 # give summary and ask user
 hits<-table(query_results$Metabolite)[1]
@@ -496,7 +572,7 @@ if(out != "no"){
       
     # import file
     # select correct file format
-    ext <- file_ext(files)
+    ext <- file_ext(file)
     file_format <- unique(ext)
       
     # load csv data    
@@ -516,6 +592,12 @@ if(out != "no"){
     # write name metabolite conversion to file
     write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion_manual.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
   }
+  # report step
+  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites. Data was further manually edited."))
+} 
+if(out == "no"){
+  # report step
+  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites. Data was NOT further manually edited."))
 }
 
 # Section 5.2 outputs:
@@ -546,7 +628,10 @@ if (exists("df.Resp.ordered.norm")){
   
   
 ### Step 6: Sort and condense dataframes (mandatory) ----
-  
+cat("\n\n=============================\n")
+cat("Step 6: Sort and condense dataframes (mandatory)\n")
+cat("=============================\n")  
+
 ## Step 6.1: Sort dataframes by RT and names ----
 df.RT.ordered.rename.sorted <- arrange(df.RT.ordered.rename , Mean, Name)
 df.Resp.ordered.rename.sorted <- arrange(df.Resp.ordered.rename, Mean, Name)
@@ -580,7 +665,7 @@ for (i in nrow(df.RT.ordered.rename.sorted.temp):2){
           df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
         } else {
           df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
-          message(str_c("WARNING for row ",i,": Compound name: ", df.RT.ordered.rename.sorted.temp[i,1]," Some RT values where overwritten during fine scale merging process! Please check intermediate files for details."))
+          message(str_c("\nWARNING: for row ",i,": Compound name: ", df.RT.ordered.rename.sorted.temp[i,1]," Some RT values where overwritten during fine scale merging process! Please check intermediate files for details."))
         }
       }
       # loop over all positions and add non NA values to previous row as well as sums (for Resp)
@@ -589,7 +674,7 @@ for (i in nrow(df.RT.ordered.rename.sorted.temp):2){
           df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
         } else {
           df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
-          message(str_c("WARNING for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.temp[i,1]," Some Response values where summed up during fine scale merging process! Please check intermediate files for details."))
+          #message(str_c("\nINFO for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.temp[i,1]," Some Response values where summed up during fine scale merging process! Please check intermediate files for details."))
         }
       }
     } else {
@@ -614,6 +699,9 @@ df.Resp.ordered.rename.fine$SD <- df.RT.ordered.rename.fine$SD
 # Sort dataframes by RT and names
 df.RT.ordered.rename.fine.sorted <- arrange(df.RT.ordered.rename.fine , Mean, Name)
 df.Resp.ordered.rename.fine.sorted <- arrange(df.Resp.ordered.rename.fine , Mean, Name)
+
+# report step
+message(str_c("\nINFO: Fine scale condensation of peak data completed successfully"))
 
 # Section 6.2 outputs:
 # df.RT.ordered.rename.fine.sorted
@@ -653,7 +741,7 @@ for (i in nrow(df.RT.ordered.rename.sorted.coarse1.temp):2){
           df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
         } else {
           df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
-          message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse1.temp[i,1]," Some Response values where summed up during coarse1 scale merging process! Please check intermediate files for details."))
+          #message(str_c("\nINFO: for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse1.temp[i,1]," Some Response values where summed up during coarse1 scale merging process! Please check intermediate files for details."))
         }
       }
     } else {
@@ -690,6 +778,9 @@ for (i in 1:nrow(df.RT.ordered.rename.coarse1)){
 df.RT.ordered.rename.coarse1.sorted <- arrange(df.RT.ordered.rename.coarse1 , Mean, Name)
 df.Resp.ordered.rename.coarse1.sorted <- arrange(df.Resp.ordered.rename.coarse1 , Mean, Name)
 
+# report step
+message(str_c("\nINFO: First coarse scale condensation of peak data completed successfully"))
+
 # Section 6.3 outputs:
 # df.RT.ordered.rename.coarse1.sorted
 # df.Resp.ordered.rename.coarse1.sorted
@@ -724,7 +815,7 @@ for (i in nrow(df.RT.ordered.rename.sorted.coarse2.temp):2){
           df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
         } else {
           df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
-          message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse2.temp[i,1]," Some Response values where summed up during coarse2 scale merging process! Please check intermediate files for details."))
+          #message(str_c("\nINFO for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse2.temp[i,1]," Some Response values where summed up during coarse2 scale merging process! Please check intermediate files for details."))
         }
       }
     } else {
@@ -761,13 +852,19 @@ for (i in 1:nrow(df.RT.ordered.rename.coarse2)){
 df.RT.ordered.rename.coarse2.sorted <- arrange(df.RT.ordered.rename.coarse2 , Mean, Name)
 df.Resp.ordered.rename.coarse2.sorted <- arrange(df.Resp.ordered.rename.coarse2 , Mean, Name)
   
+# report step
+message(str_c("\nINFO: Second coarse scale condensation of peak data completed successfully"))
+
 # Section 6.4 outputs:
 # df.RT.ordered.rename.coarse2.sorted
 # df.Resp.ordered.rename.coarse2.sorted
 
   
 ### Step 7: Plot retention time distributions (optional) ----
-  
+cat("\n\n=============================\n")
+cat("Step 7: Plot retention time distributions (optional)\n")
+cat("=============================\n")    
+
 # create output dir
 dir.create(file.path(outfolder,"plots"), showWarnings = FALSE)
 
@@ -831,7 +928,7 @@ ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.
 ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.png")), width = 40, height = 50, units = "cm")
 
 # report file generation
-message(str_c("Retention time distribution was plotted on compound level and output ist stored under: ",file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution.pdf"))))
+message(str_c("\nINFO: Retention time distribution was plotted on compound level and output ist stored under: ",file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution.pdf"))))
 
 
 ## Step 7.2: On metabolite level ----
@@ -839,6 +936,9 @@ message(str_c("Retention time distribution was plotted on compound level and out
 
 
 ### Step 8: Export/Save RT and Resp matrix/dataframes (mandatory) ----
+cat("\n\n=============================\n")
+cat("Step 8: Export/Save RT and Resp matrix/dataframes (mandatory)\n")
+cat("=============================\n")  
 
 # create output dir
 dir.create(file.path(outfolder,"peak_data"), showWarnings = FALSE) 
@@ -883,11 +983,17 @@ dir.create(file.path(outfolder,"peak_data"), showWarnings = FALSE)
 # polish dataframes for saving:
 df.RT.ordered <- rename(df.RT.ordered, Mean_RT = Mean, SD_RT =SD) %>%
   arrange(Mean_RT, Compound)
-df.Resp.ordered.NA <- rename(df.Resp.ordered.NA, Mean_RT = Mean, SD_RT =SD) %>%
+df.Resp.ordered <- rename(df.Resp.ordered, Mean_RT = Mean, SD_RT =SD) %>%
   arrange(Mean_RT, Compound)
+for (c in 2:length(df.Resp.ordered)){
+  df.Resp.ordered[,c][is.na(df.Resp.ordered[,c])] <- 0
+}
 if (exists("df.Resp.ordered.norm.NA")){
-  df.Resp.ordered.norm.NA <- rename(df.Resp.ordered.norm.NA, Mean_RT = Mean, SD_RT =SD) %>%
+  df.Resp.ordered.norm <- rename(df.Resp.ordered.norm, Mean_RT = Mean, SD_RT =SD) %>%
     arrange(Mean_RT, Compound)
+  for (c in 2:length(df.Resp.ordered.norm)){
+    df.Resp.ordered.norm[,c][is.na(df.Resp.ordered.norm[,c])] <- 0
+  }
 }
 df.RT.ordered.rename.sorted <- rename(df.RT.ordered.rename.sorted, Mean_RT = Mean, SD_RT =SD) %>%
   select( -RT.variant)
@@ -957,10 +1063,10 @@ write.table(df.RT.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data"
 ## Step 8.3: Save Response data in .xlsx file format ----
 wb = createWorkbook()
 addWorksheet(wb, "Resp.raw")
-writeData(wb, sheet = 1, df.Resp.ordered.NA)
-if (exists("df.Resp.ordered.norm.NA")){
+writeData(wb, sheet = 1, df.Resp.ordered)
+if (exists("df.Resp.ordered.norm")){
   addWorksheet(wb, "Resp.raw.norm_(temp)")
-  writeData(wb, sheet = 2, df.Resp.ordered.norm.NA)
+  writeData(wb, sheet = 2, df.Resp.ordered.norm)
   # set sheet number
   s<-3
 } else {
@@ -990,7 +1096,7 @@ write.table(df.Resp.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_dat
 write.table(df.Resp.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 
 # report output file generation
-message(str_c("All MetaPLMA analysis results are saved under: ",file.path(outfolder,"peak_data")))
+message(str_c("\nINFO: All MetaPLMA analysis results were saved under: ",file.path(outfolder,"peak_data")))
 
 # open outfolder
 opendir <- function(dir = outfolder){
@@ -1003,28 +1109,6 @@ opendir <- function(dir = outfolder){
 opendir()
 
 # Work in Progress
-# Things to do:
-#  - Integrate command line operation
-# # add CAS
-# # initialise CAS column 
-# query_results$CAS <- ''
-# # loop through all names
-# for (i in 1:nrow(query_results)){
-#   # create https link variable 
-#   link <- str_c("https://cts.fiehnlab.ucdavis.edu/rest/convert/Chemical%20Name/CAS/",query_results$Name[i])
-#   # online Chemical name to CAS conversion
-#   cas.result<-try(system(paste("curl -k ",link), intern = TRUE, ignore.stderr = TRUE))
-#   # check if results where returned
-#   if (identical(cas.result, character(0))){
-#     
-#   }
-#   cas.raw<-strsplit(cas.result, ",")[[1]][4]
-#   cas<-strsplit(cas.raw, "\"")[[1]][4]
-#   query_results$CAS[i] <- cas 
-# }
-
-
-## Alternative: Inform user about pdf to tsv conversion and ask if data looks good to proceed (R terminal)
-#out <- if (interactive()){
-#  askYesNo("Note: .pdf to .tsv conversion completed successfully. Please check the created .tsv files. \nQuestion: Do they contain the correct information? \n          (Yes: .tsv files will be used automatically for further analysis)\n          (no: Please adjust .tsv files and restart program using the adjusted files) ")
-#}
+# Features for the next version:
+#   - Integrate command line operation
+#   - Integrate CAS numbers

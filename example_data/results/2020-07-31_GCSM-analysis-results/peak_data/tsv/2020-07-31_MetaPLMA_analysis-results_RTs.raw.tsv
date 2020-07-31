@@ -1,0 +1,148 @@
+Compound	Sample1.tsv	Sample2.tsv	Sample3.tsv	Mean_RT	SD_RT
+Tris(trimethylsilyl)borate	4.27	4.28	4.33	4.29333333333333	0.0321455025366433
+Pyridine, 3-trimethylsiloxy-	4.85	4.86	4.89	4.86666666666667	0.0208166599946612
+Acetamide, 2,2,2-trifluoro-N-methyl-N-(trimethylsilyl)-	5.11	5.12	5.16	5.13	0.0264575131106458
+Hexanoic acid, trimethylsilyl ester	5.23	5.23		5.23	0
+L-Valine, trimethylsilyl ester		5.45	5.49	5.47	0.0282842712474619
+EIQTMS_N12C_ATHL_1091.7_3161BN26_L-Alanine (2TMS)		5.63		5.63	
+EIQTMS_N12C_LJALD_1099.5_2236BG34_L-Alanine (2TMS)	5.65		5.69	5.67	0.0282842712474619
+Tris(trimethylsilyl)hydroxylamine	5.82		5.83	5.825	0.00707106781186532
+2,2,5,5-Tetramethyl-4-ethyl-3-imidazoline-1-oxyl		5.83		5.83	
+EIQTMS_N12C_NID1_1139.3_1267BK12_[NA]	6.12	6.12	6.15	6.13	0.0173205080756889
+l-Leucine, trimethylsilyl ester			6.31	6.31	
+Pentasiloxane, dodecamethyl-	6.56	6.56		6.56	0
+EITTMS_N12C_ATHR_1234.3_1135EC44_			6.58	6.58	
+EITTMS_N12C_ATHR_1436.4_1135EC44_	7.06		7.08	7.07	0.0141421356237313
+EIQTMS_N12C_LJAF_1222.5_2236BN50_L-Valine (2TMS)		7.16		7.16	
+EITTMS_N12C_ATHR_1269.8_1135EC44_Urea (2TMS)		7.41		7.41	
+EIQTMS_N12C_SD1_1256.5_3035BB03_Urea (2TMS)	7.42			7.42	
+Silanamine, 1,1,1-trimethyl-N-(trimethylsilyl)-N-[2-[(trimethylsilyl)oxy]ethyl]-			7.43	7.43	
+3,6,9-Trioxa-2,10-disilaundecane, 2,2,10,10-tetramethyl-		7.54	7.56	7.55	0.0141421356237306
+Carbamic acid,(trimethylsilyl)[(trimethylsilyl)oxy] trimethylsilyl ester	7.57			7.57	
+EITTMS_N12C_SD2_1281.1_1179EK05_L-Serine (2TMS)		7.77		7.77	
+EITTMS_N12C_SD1_1280.9_1164EK04_L-Serine (2TMS)			7.79	7.79	
+Octanoic acid, trimethylsilyl ester	7.79			7.79	
+EIQTMS_N12C_LJARL_1284.6_2236BN14_Glycerol (3TMS)	8.08	8.09	8.09	8.08666666666667	0.00577350269189613
+EITTMS_N12C_SD2_1312.8_1179EK07_L-Isoleucine (2TMS)		8.39		8.39	
+l-Threonine, O-(trimethylsilyl)-, trimethylsilyl ester			8.4	8.4	
+EIQTMS_N12C_LJALM_1304.1_2236BN40_L-Proline (2TMS)	8.45			8.45	
+EIQTMS_N12C_ATHL_1310.2_3161BN21_Glycine (3TMS)	8.63			8.63	
+EIQTMS_N12C_LJAF_1327.1_2236BN50_Succinic acid (2TMS)		8.65		8.65	
+EIQTMS_N12C_LJALM_1326.3_2236BN40_Succinic acid (2TMS)			8.65	8.65	
+Cyclohexasiloxane, dodecamethyl-	8.75			8.75	
+EITTMS_N12C_ATHR_1358.9_1135EC06_	9.1	9.1	9.11	9.10333333333333	0.00577350269189613
+5-Keto-2,2-dimethylheptanoic acid, ethyl(ester)	9.42	9.41	9.42	9.41666666666667	0.00577350269189613
+EIQTMS_N12C_ATHL_1367.4_3161BN33_L-Serine (3TMS)	9.59	9.59		9.59	0
+EIQTMS_N12C_LJAF_1370.6_2236BN50_L-Serine (3TMS)			9.59	9.59	
+EIQTMS_N12C_LJAF_1394.7_2236BN50_L-Threonine (3TMS)	10.1			10.1	
+EIQTMS_N12C_LJALD_1394.0_2236BN30_L-Threonine (3TMS)		10.1		10.1	
+EIQTMS_N12C_ATHL_1392.0_3161BN20_L-Threonine (3TMS)			10.11	10.11	
+l-Methionine, trimethylsilyl ester			10.39	10.39	
+Tris(hydroxymethyl)aminomethane, O,O',O''-tris(trimethylsilyl) ether			10.54	10.54	
+l-Aspartic acid, bis(trimethylsilyl) ester		10.66	10.67	10.665	0.00707106781186532
+_-Alanine, N,N-bis(trimethylsilyl)-, trimethylsilyl ester		10.79	10.79	10.79	0
+EIQTMS_N12C_LJAF_1431.9_2236BN50_beta-Alanine (3TMS)	10.79			10.79	
+1H-Indole-2,3-dione, 6-ethoxy-1-(trimethylsilyl)-, 3-[O-(trimethylsilyl)oxime]		11.46		11.46	
+Glycine, N-[_-[(tert-butyldimethylsilyl)oxy]benzylidene]-, tert-butyldimethylsilyl ester	11.46			11.46	
+L-(+)-Threose, tris(trimethylsilyl) ether, methyloxime (syn)			11.46	11.46	
+EITTMS_N12C_ATHR_1479.3_1135EC44_		11.78	11.78	11.78	0
+EIQTMS_N12C_ATHL_1491.4_3161BN27_Malic acid (3TMS)	12.07		12.07	12.07	0
+EIQTMS_N12C_LJALM_1491.9_2236BN40_Malic acid (3TMS)		12.07		12.07	
+3,6,9,12-Tetraoxa-2,13-disilatetradecane, 2,2,13,13-tetramethyl-	12.25	12.25	12.25	12.25	0
+(Trimethylsilyl)methyl octanoate	12.39	12.38	12.39	12.3866666666667	0.00577350269189613
+EIQTMS_N12C_LJARP_1527.6_2236BN20_Pyroglutamic acid (2TMS)	12.66	12.66		12.66	0
+EIQTMS_N12C_NID1_1538.9_1267BK12_[596; N-Acetylglutamic acid (2TMS)]			12.79	12.79	
+Propanoic acid, 2-methyl-2,3-bis[(trimethylsilyl)oxy]-, trimethylsilyl ester			13.55	13.55	
+EIQTMS_N12C_SD1_1567.6_3196BU28_Threonic acid (4TMS)	13.71	13.71	13.71	13.71	0
+EITTMS_N12C_ATHR_1594.9_1135EC44_[661; Proline (2TMS)]			13.88	13.88	
+EIQTMS_N12C_ATHL_1630.5_3161BN27_L-Glutamic acid (3TMS)	14.74	14.74	14.74	14.74	0
+Dodecanoic acid, trimethylsilyl ester	15.15	15.14	15.15	15.1466666666667	0.00577350269189613
+Silane, (1,2,4,5-cyclohexanetetrayltetraoxy)tetrakis[trimethyl-			15.55	15.55	
+EITTMS_N12C_SD2_1681.5_1179EK03_L-Asparagine (3TMS)	15.81	15.8	15.8	15.8033333333333	0.00577350269189613
+EITTMS_N12C_STUL_1681.2_1135EC28_Ribose methoxyamine (4TMS)	16.26	16.26	16.25	16.2566666666667	0.00577350269189716
+D-(-)-Tagatose, pentakis(trimethylsilyl) ether, methyloxime (anti)			16.45	16.45	
+2-[1-[2-(tert-Butyl-dimethyl-siloxylmethyl]-pyrrolidino]ethyl]-5-phenyl-[1,3,4]oxadiazole	16.65			16.65	
+EITTMS_N12C_NTAL_1700.2_1135EC07_[Pentitol (5TMS)]		16.65	16.65	16.65	0
+EITTMS_N12C_SD1_1886.0_1344EC16_2-Ketogluconic acid methoxyamine {BP} (5TMS)	16.82			16.82	
+EIQTMS_N12C_SD1_1716.4_3196BU17_Xylitol (5TMS) - RT:16.89			16.89	16.89	
+EITTMS_N12C_SD1_1717.4_1288EC37_Xylitol (5TMS)		16.89		16.89	
+EIQTMS_N12C_SD1_1716.4_3196BU17_Xylitol (5TMS)	17.14	17.14		17.14	0
+EIQTMS_N12C_SD1_1716.4_3196BU17_Xylitol (5TMS) - RT:17.15			17.15	17.15	
+EITTMS_N12C_SD1_1862.2_2011EC39_2-Keto-L-gulonic acid methoxyamine (5TMS)	17.36			17.36	
+EITTMS_N12C_SD1_1862.2_2011EC39_2-Keto-L-gulonic acid methoxyamine (5TMS)1			17.36	17.36	
+_-D-Glucopyranoside, methyl 2-(acetylamino)-2-deoxy-3-O-(trimethylsilyl)-, cyclic methylboronate - RT:17.57		17.57		17.57	
+_-D-Glucopyranoside, methyl 2-(acetylamino)-2-deoxy-3-O-(trimethylsilyl)-, cyclic methylboronate1			17.57	17.57	
+5,8,11,14-Eicosatetraynoic acid, trimethylsilyl ester	17.58			17.58	
+EIQTMS_N12C_ATHL_1784.5_3161BN22_L-Glutamine (3TMS)			17.87	17.87	
+EIQTMS_N12C_ATHL_1784.8_3038BN18_L-Glutamine (3TMS)	17.88	17.87		17.875	0.00707106781186407
+EITTMS_N12C_STUO_1953.9_1135EC31_G			17.99	17.99	
+EIQTMS_N12C_LJALM_1773.4_2236BN40_[939; 2-Keto-L-gluconic acid (5TMS); A11]1			18.08	18.08	
+_-D-Galactopyranoside, methyl 2,3-bis-O-(trimethylsilyl)-, cyclic methylboronate - RT:18.14		18.14		18.14	
+EIQTMS_N12C_OARPLAS_1827.4_3350DF05_Citric acid (4TMS)	19.02	19.01		19.015	0.00707106781186407
+Tetradecanoic acid, trimethylsilyl ester			19.11	19.11	
+N-Acetyl glucosamine methoxime, tetrakis(trimethylsilyl)	19.37		19.36	19.365	0.00707106781186658
+D-Ribo-Hexitol, 3-deoxy-1,2,4,5,6-pentakis-O-(trimethylsilyl)-		19.37		19.37	
+EIQTMS_N12C_LJALM_1852.8_2236BN40_Dehydroascorbic acid dimer; L(+)-Ascorbic acid {BP}		19.53		19.53	
+EIQTMS_N12C_LJALM_1852.8_2236BN40_Dehydroascorbic acid dimer; L(+)-Ascorbic acid {BP}1			19.53	19.53	
+EIQTMS_N12C_LJALM_1852.8_2236BN40_Dehydroascorbic acid dimer; L(+)-Ascorbic acid {BP}1 - RT:20.04			20.04	20.04	
+EIQTMS_N12C_LJARL_1875.9_2236BN14_Fructose methoxyamine (5TMS)		20.28	20.29	20.285	0.00707106781186407
+EIQTMS_N12C_SD1_1878.2_3035BB03_Sorbose methoxyamine {BP} (5TMS)	20.3			20.3	
+EITTMS_N12C_NTAR_2690.8_1135EC08_Lactose methoxyamine (8TMS); beta-D-Gal-(1,4)-D-Glc	20.61			20.61	
+EITTMS_N12C_SD2_1885.5_1135EC00_Galactose methoxyamine (5TMS)		20.66		20.66	
+d-Galactose, 2,3,4,5,6-pentakis-O-(trimethylsilyl)-, o-methyloxyme, (1E)-			20.67	20.67	
+d-Galactose, 2,3,4,5,6-pentakis-O-(trimethylsilyl)-, o-methyloxyme, (1E)- - RT:20.79			20.79	20.79	
+d-Glucose, 2,3,4,5,6-pentakis-O-(trimethylsilyl)-, o-methyloxyme, (1E)-	20.79	20.79		20.79	0
+d-Galactose, 2,3,4,5,6-pentakis-O-(trimethylsilyl)-, o-methyloxyme, (1E)- - RT:21.06			21.06	21.06	
+EITTMS_N12C_SD2_1889.9_1135EC00_Glucose methoxyamine (5TMS)	21.09			21.09	
+EITTMS_N12C_ATHR_1910.1_1135EC44_Glucose methoxyamine {BP} (5TMS)		21.13		21.13	
+D-Mannitol, 1,2,3,4,5,6-hexakis-O-(trimethylsilyl)-	21.42	21.42	21.41	21.4166666666667	0.00577350269189716
+D-Mannitol, 1,2,3,4,5,6-hexakis-O-(trimethylsilyl)- - RT:21.56	21.56			21.56	
+EITTMS_N12C_SD2_1728.8_1164EK02_Ribitol (5TMS)	21.66			21.66	
+10,12-Docosadiynedioic acid ditms			22.09	22.09	
+EITTMS_N12C_STUL_2254.2_1135EC28_G		22.25		22.25	
+_-D-Galactopyranoside, methyl 2,3-bis-O-(trimethylsilyl)-, cyclic methylboronate	22.26		22.26	22.26	0
+EITTMS_N12C_STUF_1968.0_1135EC32_G	22.37			22.37	
+7-(Trimethylsilyl)-2,6-bis[(trimethylsilyl)oxy]-7H-purine			22.76	22.76	
+EIQTMS_N12C_SCA_2049.5_3147BF22_Hexadecanoic acid (1TMS)		22.89		22.89	
+EIQTMS_N12C_LJAF_2051.5_2236BN50_Hexadecanoic acid (1TMS)	22.89		22.9	22.895	0.00707106781186407
+EITTMS_N12C_ATHR_2027.2_1135EC44_	23.29		23.29	23.29	0
+Oleanitrile		23.47	23.48	23.475	0.00707106781186658
+EITTMS_N12C_SD1_2089.0_1288EC05_Allantoin (3TMS)	23.71			23.71	
+_-D-Glucopyranosiduronic acid, 3-(5-ethylhexahydro-2,4,6-trioxo-5-pyrimidinyl)-1,1-dimethylpropyl 2,3,4-tris-O-(trimethylsilyl)-, methyl ester1			23.98	23.98	
+_-D-Glucopyranoside, methyl 2-(acetylamino)-2-deoxy-3-O-(trimethylsilyl)-, cyclic methylboronate	23.99			23.99	
+_-D-Glucopyranoside, methyl 2-(acetylamino)-2-deoxy-3-O-(trimethylsilyl)-, cyclic methylboronate - RT:24.2	24.2			24.2	
+EIQTMS_N12C_ATHL_2090.3_3161BN22_myo-Inositol (6TMS)			24.34	24.34	
+EIQTMS_N12C_LJARL_2093.9_2236BN14_myo-Inositol (6TMS)		24.34		24.34	
+EIQTMS_N12C_SD1_2111.3_1325BK16_Uric acid (4TMS)	24.44		24.44	24.44	0
+N,9-bis(Trimethylsilyl)-6-[(trimethylsilyl)oxy]-9H-purin-2-amine		24.63	24.64	24.635	0.00707106781186658
+Heptadecanoic acid, trimethylsilyl ester	24.66			24.66	
+D-(-)-Fructofuranose, pentakis(trimethylsilyl) ether (isomer 2)			25.72	25.72	
+D-Psicofuranose, pentakis(trimethylsilyl) ether (isomer 1)		25.72		25.72	
+trans-9-Octadecenoic acid, trimethylsilyl ester	25.94	25.94	25.94	25.94	0
+EIQTMS_N12C_SCA_2246.9_3147BF23_Octadecanoic acid (1TMS)	26.37	26.37	26.37	26.37	0
+EITTMS_N12C_ATHL_2309.5_1135EC24_[Galactosylglycerol (6TMS)]	27.42	27.42	27.43	27.4233333333333	0.00577350269189511
+EITTMS_N12C_ATHL_3035.3_1135EC05_[952; Sucrose (8TMS)]	27.64	27.63		27.635	0.00707106781186658
+EITTMS_N12C_ATHL_2309.5_1135EC24_[Galactosylglycerol (6TMS)] - RT:27.74	27.74	27.74		27.74	0
+EITTMS_N12C_ATHL_2309.5_1135EC24_[Galactosylglycerol (6TMS)] - RT:27.75			27.75	27.75	
+EIQTMS_N12C_ATHL_2331.7_3161BN25_Glucose-6-phosphate methoxyamine (6TMS)		27.85		27.85	
+EITTMS_N12C_SD1_2322.8_1344EC17_Galactose-6-phosphate methoxyamine (6TMS)	28.01			28.01	
+Oleamide, N-trimethylsilyl-	28.19	28.19	28.2	28.1933333333333	0.00577350269189511
+_-D-Galactopyranose, 6-O-(trimethylsilyl)-, cyclic 1,2:3,4-bis(butylboronate)	28.41			28.41	
+D-Myo-Inositol, 1,2,4,5,6-pentakis-O-(trimethylsilyl)-, bis(trimethylsilyl) phosphate		28.6	28.61	28.605	0.00707106781186407
+EITTMS_N12C_ATHR_2566.0_1135EC44_[Contamination]		29.16		29.16	
+EITTMS_N12C_SD1_2640.8_1194EK21_Sucrose (8TMS); alpha-D-Glc-(1,2)-beta-D-Fru	29.16			29.16	
+Diisooctyl phthalate			29.17	29.17	
+EIQTMS_N12C_ATHL_2651.2_3161BN21_Sucrose (8TMS); alpha-D-Glc-(1,2)-beta-D-Fru	30.02	30.02		30.02	0
+EIQTMS_N12C_ATHL_2651.2_3161BN21_Sucrose (8TMS); alpha-D-Glc-(1,2)-beta-D-Fru1			30.02	30.02	
+4_-Methylandrostane2,3-diol-1,17-dione	31.07			31.07	
+EITTMS_N12C_ATHR_3605.3_1135EC25_[Contamination]		31.07		31.07	
+EITTMS_N12C_ATHR_3414.0_1135EC44_[680; Isomaltose methoxyamine (8TMS)]1			31.16	31.16	
+_-D-Galactopyranoside, methyl 2,3-bis-O-(trimethylsilyl)-, cyclic methylboronate - RT:31.62	31.62			31.62	
+D-(+)-Cellobiose, octakis(trimethylsilyl) ether, methyloxime (isomer 1)	32.02			32.02	
+EITTMS_N12C_SD1_2765.9_1344EC78_Maltose methoxyamine {BP} (8TMS); alpha-D-Glc-(1,4)-D-Glc1			32.02	32.02	
+Adenosine, N-(trimethylsilyl)-2',3'-bis-O-(trimethylsilyl)-, 5'-[bis(trimethylsilyl) phosphate]		32.3		32.3	
+Adenosine, N-(trimethylsilyl)-2',3'-bis-O-(trimethylsilyl)-, 5'-[bis(trimethylsilyl) phosphate]1			32.31	32.31	
+EIQTMS_N12C_LJAN_3180.9_2233BN14_[NA]	32.93	32.93	32.94	32.9333333333333	0.00577350269189511
+1-Monolinoleoylglycerol trimethylsilyl ether	34.44			34.44	
+EITTMS_N12C_SD1_2765.9_1344EC78_Maltose methoxyamine {BP} (8TMS); alpha-D-Glc-(1,4)-D-Glc32.00					
+EITTMS_N12C_SD1_2765.9_1344EC78_Maltose methoxyamine {BP} (8TMS); alpha-D-Glc-(1,4)-D-Glc32.48					
