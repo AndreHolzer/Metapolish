@@ -1,36 +1,15 @@
-# Step 0: Initialise ----
+### Step 0: Initialise (mandatory) ----
 
-# Step 0.1: Load packages ----
+## Step 0.1: Load packages ----
+
+# define packages, install and load them
 list.of.packages = c("here","tidyverse","knitr","tcltk","readxl","matrixStats","openxlsx","tools","stringr","utils","pdftools","ggplot2","ggpubr","BBmisc","ggsci","scales","RColorBrewer","devtools","RJSONIO","httr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages) > 0) {install.packages(new.packages)}
 lapply(list.of.packages, require, character.only=T)
 
-# # download required packages for MetaboAnalyst
-# metanr_packages <- function(){
-#   metr_pkgs <- c("impute", "pcaMethods", "globaltest", "GlobalAncova", "Rgraphviz", "preprocessCore", "genefilter", "SSPA", "sva", "limma", "KEGGgraph", "siggenes","BiocParallel", "MSnbase", "multtest","RBGL","edgeR","fgsea","devtools","crmn")
-#   list_installed <- installed.packages()
-#   new_pkgs <- subset(metr_pkgs, !(metr_pkgs %in% list_installed[, "Package"]))
-#   if(length(new_pkgs)!=0){if (!requireNamespace("BiocManager", quietly = TRUE))
-#     install.packages("BiocManager")
-#     BiocManager::install(new_pkgs)
-#     print(c(new_pkgs, " packages added..."))
-#   }
-#   
-#   if((length(new_pkgs)<1)){
-#     print("No new packages added...")
-#   }
-# }
-# metanr_packages()
-# 
-# # Install MetaboAnalystR with documentation
-# devtools::install_github("xia-lab/MetaboAnalystR", build = TRUE, build_vignettes = TRUE, build_manual =T)
-# # Load the MetaboAnalystR package
-# library("MetaboAnalystR")
-# 
 
-
-# Step 0.2: Define global variables 
+## Step 0.2: Define global variables ----
 
 # Date
 date <- format(Sys.Date(), format="%Y-%m-%d")
@@ -40,10 +19,12 @@ setwd(wd)
 # Name of the output directory (will be created in your current working directory)
 outfolder <- file.path(str_c(date,"_GCSM-analysis-results"))
 # create output dir
-dir.create(outfolder, showWarnings = TRUE)
+dir.create(outfolder, showWarnings = FALSE)
 
 
-# Step 1: Select input files (pdf, excel, tsv or csv files)
+### Step 1: Read peak data input files (mandatory) ----
+
+## Step 1.1: Select input files (pdf, excel, tsv or csv files) ----
 
 # GUI to allow user selection
 filters <- matrix(c("All accepted",".pdf .tsv .csv .xlsx .txt", "PDF files",".pdf","Comma seperated files",".csv","Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 7, 2, byrow = TRUE)
@@ -53,60 +34,50 @@ files <- tk_choose.files(caption = "Choose GCMS files to analyse", multi = TRUE,
 ext <- file_ext(files)
 file_format <- unique(ext)
 
+# check if file format is supported and consistent
 for (file in 1:length(files)){
-  
   # Report error if file format is wrong
   if(!(ext[[file]] %in% c("pdf","xlsx","tsv","csv","txt")) ){
     stop(str_c("Incorrect extension of file ",file,": Please select only files of supported format (.pdf,.xlsx,.tsv,.csv,.txt)."))
   }
-  
   # Report error if not all files are of same format
   if(length(file_format) > 1){
     stop(str_c("Inconsitent file extensions. All files must be of same file format."))
   }
 } 
 
-# define form variable
-form <- "yes"
 
-## Step 1.1: read pdf and convert to tsv
+## Step 1.2: Read pdf and convert to tsv ----
+
+# if file format is pdf
 if(file_format == "pdf"){
-  
+  # loop over all input files
   for (file in 1:length(files)){
-    
     # read pdf file and split into rows
     pages <- pdf_text(files[file]) %>% strsplit(split = "\n")
-    
     # set read to default ("no")
     read <- "no"
     # set run counter to 0
     run <- 0
-    
     # go through the pages and extract table information
     for (p in 1:length(pages)){
-      
       # select text from a page
       page.text<-pages[p][[1]]
       #identify start position for text extraction based on grep result
       start_pos <- tail(grep("Compound", page.text), n=1)
-      
       # set read to yes if start signal was recognised
       if(length(start_pos) == 1){
         read <- "yes"
       }
-      
       # read table data from page
       if(read == "yes"){
-        
         # increase run number
         run <- run + 1
-        
         # first run
         if(run == 1){
           # subset page text vector
           page.text.table <- page.text[(start_pos+1):(length(page.text)-1)]
         }
-        
         # further runs
         if(run > 1){
           # subset page text vector
@@ -140,30 +111,22 @@ if(file_format == "pdf"){
         if(run > 1){
           final.table <- rbind(final.table, page.text.df.final)
         }
-        
         # create output dir
-        dir.create(file.path(outfolder,"pdf2tsv"))
-        
+        dir.create(file.path(outfolder,"pdf2tsv"), showWarnings = FALSE)
         # save extracted data from pdf file as .tsv file
         write.table(final.table, file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-        
+        # report file generation
+        message(str_c("Data was extracted from .pdf files and stored in .tsv format under: ",file.path(outfolder,"pdf2tsv", paste0(date,"_",basename(files[file]),".tsv"))))
       }
     }
-    
     # concatenate tables from different files into list format
     file.list <- c()
     file.list[[file]] <- final.table 
-    
   }
   
   # Inform user about pdf to tsv conversion and ask if data looks good to proceed (GUI)
   out <- tk_messageBox(type = "yesnocancel", message = "Note: .pdf to .tsv conversion completed successfully. \n\nPlease check the created .tsv files. \n\nDo they contain the correct information? \n\n(Yes: Analysis will be continued) \n(No: Please adjust .tsv files and restart)"
                        , caption = "Question", default = "")
-  
-  ## Alternative: Inform user about pdf to tsv conversion and ask if data looks good to proceed (R terminal)
-  #out <- if (interactive()){
-  #  askYesNo("Note: .pdf to .tsv conversion completed successfully. Please check the created .tsv files. \nQuestion: Do they contain the correct information? \n          (Yes: .tsv files will be used automatically for further analysis)\n          (no: Please adjust .tsv files and restart program using the adjusted files) ")
-  #}
   
   # if data as not okay or question was canceled stop program 
   if(out != TRUE | is.na(out)){
@@ -171,48 +134,54 @@ if(file_format == "pdf"){
   }
 }
 
-## Step 1.2: read excel and convert to csv
+
+## Step 1.3: Read excel files ----
+# define form variable
+form <- "yes"
+# if files are in excel format
 if(file_format == "xlsx"){
   file.list <- lapply(files, read.xlsx, sheet = 1, rowNames = TRUE, colNames = TRUE, skipEmptyRows = TRUE, skipEmptyCols = TRUE, na.strings = "NA")  
   
   # Ask user whether input is in Shimatzu format
   form <- tk_messageBox(type = "yesno", message = "Are the selected .xlsx files already in the standard 3 tab format. \n\nYES: Theses are manually curated files of correct format.  \n\nNo: These files are in Shimadzu format and need adjustment."
                        , caption = "Question", default = "")
-}
-
-## Step 1.3: load csv data    
-if(file_format == "csv"){
-  file.list <- lapply(files, read_csv, col_names = TRUE)
-}
-
-## Step 1.4: load tsv or txt data    
-if(file_format == "tsv" | file_format == "txt"){
-  file.list <- lapply(files, read_tsv, na = c("", "NA"), col_names = TRUE)
-}
-
-# check if data format needs correction 
-if(exists("form") & form != "yes"){
   
-  ## correction of file.list data in case data is in Shimadzu output format:
-  for (file in 1:length(files)){
-    df <- file.list[[file]]
-    #adjust column names
-    colnames(df) <- df[7,]
-    # remove header lines
-    df = df[-(1:7),]
-    #correct column nmaes
-    df$RT <- df$Ret.Time
-    df$Response <- df$Area
-    df$Compound <- df$Name
-    #select required data
-    subset <- select(df, Compound, RT, Response)
-    #correct fil.list entry
-    file.list[[file]] <- subset
+  # check if data format needs correction 
+  if(exists("form") & form != "yes"){
+    
+    ## correction of file.list data in case data is in Shimadzu output format:
+    for (file in 1:length(files)){
+      df <- file.list[[file]]
+      #adjust column names
+      colnames(df) <- df[7,]
+      # remove header lines
+      df = df[-(1:7),]
+      #correct column nmaes
+      df$RT <- df$Ret.Time
+      df$Response <- df$Area
+      df$Compound <- df$Name
+      #select required data
+      subset <- select(df, Compound, RT, Response)
+      #correct file.list entry
+      file.list[[file]] <- subset
+    }
   }
 }
 
 
-# Step 2: Load dry weight data (if existing)  
+## Step 1.4: Read csv files ----
+if(file_format == "csv"){
+  file.list <- lapply(files, read_csv, col_names = TRUE)
+}
+
+
+## Step 1.5: Read tsv or txt files ----   
+if(file_format == "tsv" | file_format == "txt"){
+  file.list <- lapply(files, read_tsv, na = c("", "NA"), col_names = TRUE)
+}
+
+
+### Step 2: Load dry weight data (optional) ----
 
 # GUI to allow user to select file contaning weights
 filters <- matrix(c("All accepted",".tsv .txt .csv .xlsx", "Tab seperated files",".tsv","Excel files" ,".xlsx","Text files",".txt", "All files", "*"), 5, 2, byrow = TRUE)
@@ -222,35 +191,38 @@ dw.file <- tk_choose.files(caption = "File with dry weight data for normalisatio
 if (identical(dw.file, character(0))){
   message(str_c("No file containing sample weight information was selected. Continued without normalisation!"))
 } else {
-  
   # identify file type by extension
   ext <- file_ext(dw.file)
   file_format <- unique(ext)
-  
   # Report error if file format is wrong
   if(!(ext %in% c("xlsx","tsv","csv","txt")) ){
     message(str_c("Incorrect extension of file ",dw.file,". Only files of supported format (.xlsx,.tsv,.csv,.txt). Continued without normalisation."))
   }
   
-  ## Step 2.2: read excel and convert to csv
+  
+  ## Step 2.2: Read dry weight excel files ----
   if(file_format == "xlsx"){
     dw.file.info <- read.xlsx(dw.file, sheet = 1, colNames = TRUE, skipEmptyRows = TRUE, skipEmptyCols = TRUE, na.strings = "NA")  
   }
   
-  ## Step 2.3: load csv data    
+  
+  ## Step 2.3: Read dry weight csv files ----   
   if(file_format == "csv"){
     dw.file.info <- read_csv(dw.file, col_names = TRUE)
   }
   
-  ## Step 2.4: load tsv or txt data    
+  
+  ## Step 2.4: Read dry weight tsv or txt files ----
   if(file_format == "tsv" | file_format == "txt"){
     dw.file.info <-  read_tsv(dw.file, col_names = TRUE)
   }
-  
 }
 
 
-# Step 3: combine information into a dataframe
+### Step 3: Merge sample information into a matrix (mandatory) ----
+
+
+## Step 3.1: Create matrix by merging files by metabolite names ----
 
 # initialise list to store raw data matrixes in 
 GCMS.raw <- vector(mode = 'list', length = length(files)) 
@@ -258,7 +230,7 @@ GCMS.raw.RT <- vector(mode = 'list', length = length(files))
 GCMS.raw.Resp <- vector(mode = 'list', length = length(files)) 
 # annotate with file names
 names(GCMS.raw) <- basename(files)
-
+# loop over all files
 for (file in 1:length(files)){
   # store raw data as list of dataframes
   GCMS.raw[[file]] <- file.list[[file]]
@@ -269,7 +241,7 @@ for (file in 1:length(files)){
       # name as Unknown + retention time
       GCMS.raw[[file]]$Compound[row] <- str_c("Unknown_",as.character(GCMS.raw[[file]]$RT[row]))
     } 
-    # check if Compound name is similar a douplicate
+    # check if Compound name is similar / a douplicate
     if(duplicated(GCMS.raw[[file]]$Compound)[row]){
       # add retention time to name
       GCMS.raw[[file]]$Compound[row] <- str_c(GCMS.raw[[file]]$Compound[row]," - RT:",as.character(GCMS.raw[[file]]$RT[row]))
@@ -284,9 +256,9 @@ for (file in 1:length(files)){
   GCMS.raw.Resp[[file]] <- select(GCMS.raw[[file]], Compound, Response)
 }  
 
-# combine all RT data of all datasets into a single dataframe
+# combine all RT data of all datasets into a single matrix/dataframe
 matrix.RT <- reduce(GCMS.raw.RT, full_join, by = "Compound")
-# combine all Response data of all datasets into single dataframe
+# combine all Response data of all datasets into single matrix/dataframe
 matrix.Resp <- reduce(GCMS.raw.Resp, full_join, by = "Compound")
 
 # adjust column names
@@ -297,17 +269,21 @@ colnames(matrix.Resp) <- c("Compound", basename(files))
 matrix.RT.ordered <- matrix.RT[order(matrix.RT$Compound),]
 matrix.Resp.ordered <- matrix.Resp[order(matrix.Resp$Compound),]
 
-# add mean and sd of Retention times 
+# add mean and sd of retention times 
 matrix.RT.ordered$Mean <- rowMeans(matrix.RT.ordered[2:length(matrix.RT.ordered)], na.rm = TRUE)
 matrix.RT.ordered$SD <- rowSds(as.matrix(matrix.RT.ordered[2:length(matrix.RT.ordered)]), na.rm = TRUE)
-
-## replace NA values
-#matrix.RT.ordered[is.na(matrix.RT.ordered)] <- ''
-#matrix.Resp.ordered[is.na(matrix.Resp.ordered)] <- ''
 
 # replace NA values
 matrix.Resp.ordered.NA <- matrix.Resp.ordered
 matrix.Resp.ordered.NA[is.na(matrix.Resp.ordered.NA)] <- 0
+
+# Section 3.1 outputs:
+# matrix.RT.ordered
+# matrix.Resp.ordered
+# matrix.Resp.ordered.NA
+
+
+## Step 3.2: Expand matrix for compounds with different RTs ----
 
 # initialise dataframes
 df.RT.ordered <- data.frame()
@@ -371,8 +347,13 @@ df.Resp.ordered$SD <- df.RT.ordered$SD
 df.Resp.ordered.NA <- df.Resp.ordered
 df.Resp.ordered.NA[is.na(df.Resp.ordered.NA)] <- 0
 
+# Section 3.2 outputs:
+# df.RT.ordered
+# df.Resp.ordered
+# df.Resp.ordered.NA
 
-# Step 4: normalise response data by dry weights
+
+### Step 4: Normalise response data by dry weights (optional) ----
 
 # check if dry weight data exists
 if (exists("dw.file.info")){
@@ -394,359 +375,403 @@ if (exists("dw.file.info")){
   # replace NA values
   df.Resp.ordered.norm.NA <- df.Resp.ordered.norm
   df.Resp.ordered.norm.NA[is.na(df.Resp.ordered.norm.NA)] <- 0
-  df.Resp.ordered.rename <- df.Resp.ordered.norm
-} else {
-  df.Resp.ordered.rename <- df.Resp.ordered
 }
 
+# Section 4 outputs:
+# df.Resp.ordered.norm
+# df.Resp.ordered.norm.NA
 
-# Step 5: Convert Compound names into metabolites
 
-  ## Step 5.1: Shorten Compound names to potential metabolite names
-  # seperate potential metabolite names and RT time for mutiple variants
-  df.names <- select(df.RT.ordered, Compound) %>%
-    separate(Compound, into = c("Name", "RT.variant"), sep="-\\sRT:", remove = FALSE) %>%
-    # seperate Name after first comma behind a word
-    separate(Name, into = c("Name"), sep=",\\s", remove = TRUE) %>%
-    # remove "Methyl" from start of Name
-    mutate(Name = str_replace(Name, pattern = "^Methyl", '')) %>%
-    mutate(Name = str_replace(Name, pattern = "^methyl", '')) %>%
-    # remove space at the start of a Name
-    mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
-    # remove all other characters from start of the name other than numbers or letters
-    mutate(Name = str_replace(Name, pattern = "^[^a-z,A-Z,0-9]+", '')) %>%
-    # remove space at the end of a Name
-    mutate(Name = str_replace(Name, pattern = "\\s$", '')) %>% 
-    # remove additional junk by further separating
-    separate(Name, into = c("Junk1","Junk2","Junk3","Junk4","Junk5","Name.alt"), sep="_", remove = FALSE) %>%
-    # remove brackets
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\[", '')) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\]$", '')) %>%
-    # remove spaces at the beginning and end of name
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^\\s", '')) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s$", '')) %>%
-    # remove TMS information from name and sotare as new variable
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\s\\([1-9]{1,2}TMS\\).*", '')) %>%
-    # replace missing names with NA
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\[NA\\]", "NA")) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^[a-z]{1}$", "NA")) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^[A-Z]{1}$", "NA")) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^$", "NA")) %>%
-    # remove {BP} or {BP}1 at the end
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\{BP\\}$", "")) %>%
-    mutate(Name.alt = str_replace(Name.alt, pattern = "\\{BP\\}1$", "")) %>%
-    # remove everything until after ;
-    mutate(Name.alt = str_replace(Name.alt, pattern = "^.+;\\s", "")) %>%
-    # remove junk columns
-    select(-Junk1,-Junk2,-Junk3,-Junk4,-Junk5)
+### Step 5: Convert compound names into metabolites (mandatory) ----
+
+## Step 5.1: Shorten compound names to potential metabolite names ----
   
-  # check if Name.alt exists and is not NA and overwrite existing Name  
-  for (row in 1:nrow(df.names)){
-    if(!is.na(df.names$Name.alt[row])){
-      if(df.names$Name.alt[row] != "NA"){
-        df.names$Name[row] <- df.names$Name.alt[row]
-      }
+# seperate potential metabolite names and RT time for mutiple variants
+df.names <- select(df.RT.ordered, Compound) %>%
+  separate(Compound, into = c("Name", "RT.variant"), sep="-\\sRT:", remove = FALSE) %>%
+  # seperate Name after first comma behind a word
+  separate(Name, into = c("Name"), sep=",\\s", remove = TRUE) %>%
+  # remove "Methyl" from start of Name
+  mutate(Name = str_replace(Name, pattern = "^Methyl", '')) %>%
+  mutate(Name = str_replace(Name, pattern = "^methyl", '')) %>%
+  # remove space at the start of a Name
+  mutate(Name = str_replace(Name, pattern = "^\\s", '')) %>%
+  # remove all other characters from start of the name other than numbers or letters
+  mutate(Name = str_replace(Name, pattern = "^[^a-z,A-Z,0-9]+", '')) %>%
+  # remove space at the end of a Name
+  mutate(Name = str_replace(Name, pattern = "\\s$", '')) %>% 
+  # remove additional junk by further separating
+  separate(Name, into = c("Junk1","Junk2","Junk3","Junk4","Junk5","Name.alt"), sep="_", remove = FALSE) %>%
+  # remove brackets
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^\\[", '')) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\]$", '')) %>%
+  # remove spaces at the beginning and end of name
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^\\s", '')) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\s$", '')) %>%
+  # remove TMS information from name and sotare as new variable
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\s\\([1-9]{1,2}TMS\\).*", '')) %>%
+  # replace missing names with NA
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\[NA\\]", "NA")) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^[a-z]{1}$", "NA")) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^[A-Z]{1}$", "NA")) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^$", "NA")) %>%
+  # remove {BP} or {BP}1 at the end
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\{BP\\}$", "")) %>%
+  mutate(Name.alt = str_replace(Name.alt, pattern = "\\{BP\\}1$", "")) %>%
+  # remove everything until after ;
+  mutate(Name.alt = str_replace(Name.alt, pattern = "^.+;\\s", "")) %>%
+  # remove junk columns
+  select(-Junk1,-Junk2,-Junk3,-Junk4,-Junk5)
+  
+# check if Name.alt exists and is not NA and overwrite existing Name  
+for (row in 1:nrow(df.names)){
+  if(!is.na(df.names$Name.alt[row])){
+    if(df.names$Name.alt[row] != "NA"){
+      df.names$Name[row] <- df.names$Name.alt[row]
     }
   }
-  # remove Name.alt column
-  df.names <- select(df.names, -Name.alt)
-  # create output dir
-  dir.create(file.path(outfolder,"compound2metabolite"))
-  # write potential metabolite names in tsv file
-  write.table(df.names$Name, file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv")), quote = F, col.names = F, row.names = F, sep = '\t', na = "")
-  
-  # Step 5.2: Add KEGG and CAT IDs using the MetaboAnalyst API
+}
+# remove Name.alt column
+df.names <- select(df.names, -Name.alt)
+# create output dir
+dir.create(file.path(outfolder,"compound2metabolite"), showWarnings = FALSE)
+# write potential metabolite names in tsv file
+write.table(df.names$Name, file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv")), quote = F, col.names = F, row.names = F, sep = '\t', na = "")
+# report file generation
+message(str_c("Compound names were partically translated to potential metabolite names and list is stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-list.tsv"))))
 
-  # automatic processing 
-  # create name vector and format type
-  name.vec <- paste(df.names$Name, collapse = ';')
-  toSend = list(queryList = name.vec, inputType = "name")
   
-  # The MetaboAnalyst API url
-  call <- "http://api.xialab.ca/mapcompounds"
-  # Use httr::POST to send the request to the MetaboAnalyst API
-  query_results <- httr::POST(call, body = toSend, encode = "json")
-  # Check if response is ok (TRUE)
-  # 200 is ok! 401 means an error has occured on the user's end.
-  query_results$status_code==200
-  # Parse the response into a table
-  query_results_text <- content(query_results, "text", encoding = "UTF-8")
-  query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
-  query_results_table <- t(rbind.data.frame(query_results_json))
-  rownames(query_results_table) <- query_results_table[,1]
-  query_results <- as_tibble(query_results_table) %>%
-    select(-smiles)%>%
-    rename(Name=query)%>%
-    rename(Metabolite=hit)%>%
-    rename(HMDB=hmdb_id)%>%
-    rename(PubChem=pubchem_id)%>%
-    rename(ChEBI=chebi_id)%>%
-    rename(KEGG=kegg_id)%>%
-    rename(METLIN=metlin_id)
+## Step 5.2: Add metabolite names, KEGG and CAT IDs using the MetaboAnalyst API ----
+
+# automatic processing 
+# create name vector and format type
+name.vec <- paste(df.names$Name, collapse = ';')
+toSend = list(queryList = name.vec, inputType = "name")
   
-  # write name metabolite conversion to file
-  write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+# The MetaboAnalyst API url
+call <- "http://api.xialab.ca/mapcompounds"
+# Use httr::POST to send the request to the MetaboAnalyst API
+query_results <- httr::POST(call, body = toSend, encode = "json")
+# Check if response is ok (TRUE)
+# 200 is ok! 401 means an error has occured on the user's end.
+query_results$status_code==200
+# Parse the response into a table
+query_results_text <- content(query_results, "text", encoding = "UTF-8")
+query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
+query_results_table <- t(rbind.data.frame(query_results_json))
+rownames(query_results_table) <- query_results_table[,1]
+query_results <- as_tibble(query_results_table) %>%
+  select(-smiles)%>%
+  rename(Name=query)%>%
+  rename(Metabolite=hit)%>%
+  rename(HMDB=hmdb_id)%>%
+  rename(PubChem=pubchem_id)%>%
+  rename(ChEBI=chebi_id)%>%
+  rename(KEGG=kegg_id)%>%
+  rename(METLIN=metlin_id)
   
-  # give summary and ask user
-  hits<-table(query_results$Metabolite)[1]
-  total<-nrow(query_results)
-  perc<-round(table(query_results$Metabolite)[1]/nrow(query_results)*100,1)
+# write name metabolite conversion to file
+write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+# report file generation
+message(str_c("Compound names were translated to metabolite names using MetaboAnalysist API and results are stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv"))))
+
+# give summary and ask user
+hits<-table(query_results$Metabolite)[1]
+total<-nrow(query_results)
+perc<-round(table(query_results$Metabolite)[1]/nrow(query_results)*100,1)
   
-  # Inform user about conversion and ask how he wants to proceed
-  out <- tk_messageBox(type = "yesno", message = str_c("Note: compound to metabolite conversion completed! \n\n",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites.\n\nWe recommend to check the conversion and make manual adjustments if required. \n\nDo you want to edit the conversion now?")
-                         , caption = "Question", default = "")
+# Inform user about conversion and ask how he wants to proceed
+out <- tk_messageBox(type = "yesno", message = str_c("Note: compound to metabolite conversion completed! \n\n",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites.\n\nWe recommend to check the conversion and make manual adjustments if required. \n\nDo you want to edit the conversion now?"), caption = "Question", default = "")
   
-  if(out != "no"){
-    url <- "https://www.metaboanalyst.ca/MetaboAnalyst/upload/ConvertView.xhtml"
-    browseURL(url, browser = getOption("browser"), encodeIfNeeded = FALSE)
-    out<- tk_messageBox(type = "ok", message = str_c("Please edit the <DATE>_name-list.tsv file manually and upload it here.\n\n The file can be found in the compound2metabolite subfolder of your output directory. Once submitted you can make some adjustements within MetaboAnalysit. Once you are done please make sure you download the file again and confirm with the ok button"))
+if(out != "no"){
+  url <- "https://www.metaboanalyst.ca/MetaboAnalyst/upload/ConvertView.xhtml"
+  browseURL(url, browser = getOption("browser"), encodeIfNeeded = FALSE)
+  out<- tk_messageBox(type = "ok", message = str_c("Please edit the <DATE>_name-list.tsv file manually and upload it here.\n\n The file can be found in the compound2metabolite subfolder of your output directory. Once submitted you can make some adjustements within MetaboAnalysit. Once you are done please make sure you download the file again and confirm with the ok button"))
   
-    # upload optimized name conversion sheet
-    if(out == "ok"){
-      # GUI to allow user selection
-      filters <- matrix(c("All accepted",".tsv .csv","Comma seperated files",".csv","Tab seperated files",".tsv"), 3, 2, byrow = TRUE)
-      file <- tk_choose.files(caption = "Choose optimised ID conversion files", multi = FALSE, filter = filters)
+  # upload optimized name conversion sheet
+  if(out == "ok"){
+    # GUI to allow user selection
+    filters <- matrix(c("All accepted",".tsv .csv","Comma seperated files",".csv","Tab seperated files",".tsv"), 3, 2, byrow = TRUE)
+    file <- tk_choose.files(caption = "Choose optimised ID conversion files", multi = FALSE, filter = filters)
       
-      # import file
-      # select correct file format
-      ext <- file_ext(files)
-      file_format <- unique(ext)
+    # import file
+    # select correct file format
+    ext <- file_ext(files)
+    file_format <- unique(ext)
       
-      ## load csv data    
-      if(file_format == "csv"){
-        query_results_raw<- read_csv(file, na = c("", "NA"), col_names = TRUE)
-      }
-      
-      ## load tsv or txt data    
-      if(file_format == "tsv" | file_format == "txt"){
-        query_results_raw<- read_tsv(file, na = c("", "NA"), col_names = TRUE)
-      }
-      
-      query_results<-select(query_results_raw, -SMILES, -Comment)%>%
-        rename(Metabolite = Match) %>%
-        rename(Name = Query)
+    # load csv data    
+    if(file_format == "csv"){
+      query_results_raw<- read_csv(file, na = c("", "NA"), col_names = TRUE)
     }
+      
+    # load tsv or txt data    
+    if(file_format == "tsv" | file_format == "txt"){
+      query_results_raw<- read_tsv(file, na = c("", "NA"), col_names = TRUE)
+    }
+      
+    query_results<-select(query_results_raw, -Comment)%>%
+      rename(Metabolite = Match) %>%
+      rename(Name = Query)
+    
+    # write name metabolite conversion to file
+    write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion_manual.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
   }
+}
+
+# Section 5.2 outputs:
+# query_results
+
   
-  # Step 5.3 Add metabolite info to RT and Resp dataframe
-  df.metabolites <- left_join(df.names, query_results, by = "Name") %>%
-    mutate(Metabolite = str_replace(Metabolite, pattern = "^$", NA_character_)) %>%
-    mutate(HMDB = str_replace_na(HMDB, "-")) %>%
-    mutate(KEGG = str_replace_na(KEGG, "-")) %>%
-    mutate(PubChem = str_replace_na(PubChem, "-")) %>%
-    mutate(ChEBI = str_replace_na(ChEBI, "-")) %>%
-    mutate(METLIN = str_replace_na(METLIN, "-"))
+## Step 5.3 Add metabolite info to RT and Resp dataframe ----
+df.metabolites <- left_join(df.names, query_results, by = "Name") %>%
+  select(Compound, Name, RT.variant, Metabolite, HMDB, KEGG, PubChem, ChEBI, METLIN) %>%
+  mutate(Metabolite = str_replace(Metabolite, pattern = "^$", NA_character_)) %>%
+  mutate(HMDB = str_replace_na(HMDB, "-")) %>%
+  mutate(KEGG = str_replace_na(KEGG, "-")) %>%
+  mutate(PubChem = str_replace_na(PubChem, "-")) %>%
+  mutate(ChEBI = str_replace_na(ChEBI, "-")) %>%
+  mutate(METLIN = str_replace_na(METLIN, "-"))
   
-  df.RT.ordered.rename <- left_join(df.RT.ordered,df.metabolites, by = "Compound")
+df.RT.ordered.rename <- left_join(df.RT.ordered,df.metabolites, by = "Compound")
+# dependent on wheter normalisation was performed or not
+if (exists("df.Resp.ordered.norm")){
+  df.Resp.ordered.rename <- left_join(df.Resp.ordered.norm,df.metabolites, by = "Compound")
+} else {
   df.Resp.ordered.rename <- left_join(df.Resp.ordered,df.metabolites, by = "Compound")
+}
+
+# Section 5.3 outputs:
+# df.RT.ordered.rename
+# df.Resp.ordered.rename
   
   
-# Step 6: Sort and condense dataframes
+### Step 6: Sort and condense dataframes (mandatory) ----
   
-  # Step 6.1: Sort dataframes by RT and names
-  df.RT.ordered.rename.sorted <- arrange(df.RT.ordered.rename , Mean, Name)
-  df.Resp.ordered.rename.sorted <- arrange(df.Resp.ordered.rename, Mean, Name)
+## Step 6.1: Sort dataframes by RT and names ----
+df.RT.ordered.rename.sorted <- arrange(df.RT.ordered.rename , Mean, Name)
+df.Resp.ordered.rename.sorted <- arrange(df.Resp.ordered.rename, Mean, Name)
   
-  # Step 6.2: Condense dataframes by merging entries of same compounds with similar RTs (Fine scale)
-  # same name same RT (+-0.2)
-  # initialise dataframe
-  df.RT.ordered.rename.fine <- data.frame()
-  df.Resp.ordered.rename.fine <- data.frame()
-  # create temporary dataframe 
-  df.RT.ordered.rename.sorted.temp <- df.RT.ordered.rename.sorted
-  df.Resp.ordered.rename.sorted.temp <- df.Resp.ordered.rename.sorted
-  # loop over all rows
-  for (i in nrow(df.RT.ordered.rename.sorted.temp):2){
-    # check if Name and RT are not NA
-    if (!is.na(df.RT.ordered.rename.sorted.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Name[i-1]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i-1])){
-      # check if Name is similar to the one above and RT not more different than 0.2
-      if(abs(df.RT.ordered.rename.sorted.temp$Mean[i]-df.RT.ordered.rename.sorted.temp$Mean[i-1])<=0.2 & df.RT.ordered.rename.sorted.temp$Name[i] == df.RT.ordered.rename.sorted.temp$Name[i-1]){
-        # position of non NA values to add
-        NonNAindex.RT<- which(!is.na(df.RT.ordered.rename.sorted.temp[i,2:(ncol(df.RT.ordered.rename.sorted.temp)-10)]))
-        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.temp)-10)]))
-        # loop over all positions and add non NA values to previous row (for RT)
-        for (r in 1:length(NonNAindex.RT)){
-          if (is.na(df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)])){
-            df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
-          } else {
-            df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
-            message(str_c("WARNING for row ",i,": Compound name: ", df.RT.ordered.rename.sorted.temp[i,1]," Some RT values where overwritten during fine scale merging process! Please check intermediate files for details."))
-          }
+# Section 6.1 outputs:
+# df.RT.ordered.rename.sorted
+# df.Resp.ordered.rename.sorted
+
+
+## Step 6.2: Fine scale: condense dataframes by merging entries of same compounds with similar RTs ----
+
+# same name same RT (+-0.2)
+# initialise dataframe
+df.RT.ordered.rename.fine <- data.frame()
+df.Resp.ordered.rename.fine <- data.frame()
+# create temporary dataframe 
+df.RT.ordered.rename.sorted.temp <- df.RT.ordered.rename.sorted
+df.Resp.ordered.rename.sorted.temp <- df.Resp.ordered.rename.sorted
+# loop over all rows
+for (i in nrow(df.RT.ordered.rename.sorted.temp):2){
+  # check if Name and RT are not NA
+  if (!is.na(df.RT.ordered.rename.sorted.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Name[i-1]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.temp$Mean[i-1])){
+    # check if Name is similar to the one above and RT not more different than 0.2
+    if(abs(df.RT.ordered.rename.sorted.temp$Mean[i]-df.RT.ordered.rename.sorted.temp$Mean[i-1])<=0.2 & df.RT.ordered.rename.sorted.temp$Name[i] == df.RT.ordered.rename.sorted.temp$Name[i-1]){
+      # position of non NA values to add
+      NonNAindex.RT<- which(!is.na(df.RT.ordered.rename.sorted.temp[i,2:(ncol(df.RT.ordered.rename.sorted.temp)-10)]))
+      NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.temp)-10)]))
+      # loop over all positions and add non NA values to previous row (for RT)
+      for (r in 1:length(NonNAindex.RT)){
+        if (is.na(df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)])){
+          df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
+        } else {
+          df.RT.ordered.rename.sorted.temp[i-1, (NonNAindex.RT[r]+1)] <- df.RT.ordered.rename.sorted.temp[i, (NonNAindex.RT[r]+1)]
+          message(str_c("WARNING for row ",i,": Compound name: ", df.RT.ordered.rename.sorted.temp[i,1]," Some RT values where overwritten during fine scale merging process! Please check intermediate files for details."))
         }
-        # loop over all positions and add non NA values to previous row as well as sums (for Resp)
-        for (r in 1:length(NonNAindex.Resp)){
-          if (is.na(df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)])){
-            df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
-          } else {
-            df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
-            message(str_c("WARNING for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.temp[i,1]," Some Response values where summed up during fine scale merging process! Please check intermediate files for details."))
-          }
+      }
+      # loop over all positions and add non NA values to previous row as well as sums (for Resp)
+      for (r in 1:length(NonNAindex.Resp)){
+        if (is.na(df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)])){
+          df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
+        } else {
+          df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.temp[i, (NonNAindex.Resp[r]+1)]
+          message(str_c("WARNING for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.temp[i,1]," Some Response values where summed up during fine scale merging process! Please check intermediate files for details."))
         }
-      } else {
-        # add adjusted row to new dataframe
-        df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine, df.RT.ordered.rename.sorted.temp[i,])
-        df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[i,])
       }
     } else {
       # add adjusted row to new dataframe
       df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine, df.RT.ordered.rename.sorted.temp[i,])
       df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[i,])
     }
+  } else {
+    # add adjusted row to new dataframe
+    df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine, df.RT.ordered.rename.sorted.temp[i,])
+    df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[i,])
   }
-  # add first line as well
-  df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine,df.RT.ordered.rename.sorted.temp[1,])
-  df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[1,])
-  # correct mean and sd of Retention times and add to Resp data as well
-  df.RT.ordered.rename.fine$Mean <- rowMeans(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)], na.rm = TRUE)
-  df.RT.ordered.rename.fine$SD <- rowSds(as.matrix(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)]), na.rm = TRUE)
-  df.Resp.ordered.rename.fine$Mean <- df.RT.ordered.rename.fine$Mean
-  df.Resp.ordered.rename.fine$SD <- df.RT.ordered.rename.fine$SD
-  # Sort dataframes by RT and names
-  df.RT.ordered.rename.fine.sorted <- arrange(df.RT.ordered.rename.fine , Mean, Name)
-  df.Resp.ordered.rename.fine.sorted <- arrange(df.Resp.ordered.rename.fine , Mean, Name)
-  
-  # same metabolite different RT (coarse scale 1)
-  # initialise dataframe
-  df.RT.ordered.rename.coarse1 <- data.frame()
-  df.Resp.ordered.rename.coarse1 <- data.frame()
-  # create temporary dataframe (RT)
-  df.RT.ordered.rename.sorted.coarse1.temp <- arrange(df.RT.ordered.rename.fine.sorted, Metabolite, Name, Mean)
-  # change <double> to <character>
-  df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)] <- data.frame(lapply(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)], as.character), stringsAsFactors=FALSE)
-  # replace NA values by "-"
-  df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)][is.na(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)])] <- ""
-  # create temporary dataframe (Resp)
-  df.Resp.ordered.rename.sorted.coarse1.temp <- arrange(df.Resp.ordered.rename.fine.sorted, Metabolite, Name, Mean)
-  # loop over all rows
-  for (i in nrow(df.RT.ordered.rename.sorted.coarse1.temp):2){
-    # check if Metabolite name and RT are not NA
-    if (!is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i-1])){
-      # check if Metabolite is similar to the one above
-      if(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i] == df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]){
-        # all RT values to add
-        values.RT<- df.RT.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)]
-        # position of non NA values to add
-        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse1.temp)-10)]))
-        # loop over all positions and add RT values to previous row (for RT)
-        for (r in 1:length(values.RT)){
-          df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse1.temp[i,r+1])
+}
+# add first line as well
+df.RT.ordered.rename.fine <- rbind(df.RT.ordered.rename.fine,df.RT.ordered.rename.sorted.temp[1,])
+df.Resp.ordered.rename.fine <- rbind(df.Resp.ordered.rename.fine, df.Resp.ordered.rename.sorted.temp[1,])
+# correct mean and sd of Retention times and add to Resp data as well
+df.RT.ordered.rename.fine$Mean <- rowMeans(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)], na.rm = TRUE)
+df.RT.ordered.rename.fine$SD <- rowSds(as.matrix(df.RT.ordered.rename.fine[2:(length(df.RT.ordered.rename.fine)-10)]), na.rm = TRUE)
+df.Resp.ordered.rename.fine$Mean <- df.RT.ordered.rename.fine$Mean
+df.Resp.ordered.rename.fine$SD <- df.RT.ordered.rename.fine$SD
+# Sort dataframes by RT and names
+df.RT.ordered.rename.fine.sorted <- arrange(df.RT.ordered.rename.fine , Mean, Name)
+df.Resp.ordered.rename.fine.sorted <- arrange(df.Resp.ordered.rename.fine , Mean, Name)
+
+# Section 6.2 outputs:
+# df.RT.ordered.rename.fine.sorted
+# df.Resp.ordered.rename.fine.sorted
+
+
+## Step 6.3: Coarse scale 1: same metabolite different RT ----
+
+# initialise dataframe
+df.RT.ordered.rename.coarse1 <- data.frame()
+df.Resp.ordered.rename.coarse1 <- data.frame()
+# create temporary dataframe (RT)
+df.RT.ordered.rename.sorted.coarse1.temp <- arrange(df.RT.ordered.rename.fine.sorted, Metabolite, Name, Mean)
+# change <double> to <character>
+df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)] <- data.frame(lapply(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)], as.character), stringsAsFactors=FALSE)
+# replace NA values by "-"
+df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)][is.na(df.RT.ordered.rename.sorted.coarse1.temp[,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)])] <- ""
+# create temporary dataframe (Resp)
+df.Resp.ordered.rename.sorted.coarse1.temp <- arrange(df.Resp.ordered.rename.fine.sorted, Metabolite, Name, Mean)
+# loop over all rows
+for (i in nrow(df.RT.ordered.rename.sorted.coarse1.temp):2){
+  # check if Metabolite name and RT are not NA
+  if (!is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i]) & !is.na(df.RT.ordered.rename.sorted.coarse1.temp$Mean[i-1])){
+    # check if Metabolite is similar to the one above
+    if(df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i] == df.RT.ordered.rename.sorted.coarse1.temp$Metabolite[i-1]){
+      # all RT values to add
+      values.RT<- df.RT.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse1.temp)-10)]
+      # position of non NA values to add
+      NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse1.temp)-10)]))
+      # loop over all positions and add RT values to previous row (for RT)
+      for (r in 1:length(values.RT)){
+        df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse1.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse1.temp[i,r+1])
+      }
+      # loop over all positions and add non NA values to previous row as well as sums (for Resp)
+      for (r in 1:length(NonNAindex.Resp)){
+        if (is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)])){
+          df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
+        } else {
+          df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
+          message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse1.temp[i,1]," Some Response values where summed up during coarse1 scale merging process! Please check intermediate files for details."))
         }
-        # loop over all positions and add non NA values to previous row as well as sums (for Resp)
-        for (r in 1:length(NonNAindex.Resp)){
-          if (is.na(df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)])){
-            df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
-          } else {
-            df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse1.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse1.temp[i, (NonNAindex.Resp[r]+1)]
-            message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse1.temp[i,1]," Some Response values where summed up during coarse1 scale merging process! Please check intermediate files for details."))
-          }
-        }
-      } else {
-        # add adjusted row to new dataframe
-        df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1, df.RT.ordered.rename.sorted.coarse1.temp[i,])
-        df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[i,])
       }
     } else {
       # add adjusted row to new dataframe
       df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1, df.RT.ordered.rename.sorted.coarse1.temp[i,])
       df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[i,])
     }
+  } else {
+    # add adjusted row to new dataframe
+    df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1, df.RT.ordered.rename.sorted.coarse1.temp[i,])
+    df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[i,])
   }
-  # add first line as well
-  df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1,df.RT.ordered.rename.sorted.coarse1.temp[1,])
-  df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[1,])
-  # separate sample RTs to calculate mean and SD for each row
-  # loop over all rows
-  for (i in 1:nrow(df.RT.ordered.rename.coarse1)){
-    # initialise row RT array
-    row.RT <- c()
-    # loop over all samples
-    for (j in 2:(length(df.RT.ordered.rename.coarse1)-10)){
-      # split entries, write into array and convert to <double>
-      row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse1[[i,j]], ";"))))
-      # correct mean and sd of Retention times and add to Resp data as well
-      df.RT.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
-      df.RT.ordered.rename.coarse1$SD[i] <-sd(row.RT, na.rm = TRUE)
-      df.Resp.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
-      df.Resp.ordered.rename.coarse1$SD[i] <- sd(row.RT, na.rm = TRUE)
-    }
+}
+# add first line as well
+df.RT.ordered.rename.coarse1 <- rbind(df.RT.ordered.rename.coarse1,df.RT.ordered.rename.sorted.coarse1.temp[1,])
+df.Resp.ordered.rename.coarse1 <- rbind(df.Resp.ordered.rename.coarse1, df.Resp.ordered.rename.sorted.coarse1.temp[1,])
+# separate sample RTs to calculate mean and SD for each row
+# loop over all rows
+for (i in 1:nrow(df.RT.ordered.rename.coarse1)){
+  # initialise row RT array
+  row.RT <- c()
+  # loop over all samples
+  for (j in 2:(length(df.RT.ordered.rename.coarse1)-10)){
+    # split entries, write into array and convert to <double>
+    row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse1[[i,j]], ";"))))
+    # correct mean and sd of Retention times and add to Resp data as well
+    df.RT.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
+    df.RT.ordered.rename.coarse1$SD[i] <-sd(row.RT, na.rm = TRUE)
+    df.Resp.ordered.rename.coarse1$Mean[i] <- mean(row.RT, na.rm = TRUE)
+    df.Resp.ordered.rename.coarse1$SD[i] <- sd(row.RT, na.rm = TRUE)
   }
-  # Sort dataframes by RT and names
-  df.RT.ordered.rename.coarse1.sorted <- arrange(df.RT.ordered.rename.coarse1 , Mean, Name)
-  df.Resp.ordered.rename.coarse1.sorted <- arrange(df.Resp.ordered.rename.coarse1 , Mean, Name)
-  
-  # same name different RT (coarse scale 2)
-  # initialise dataframe
-  df.RT.ordered.rename.coarse2 <- data.frame()
-  df.Resp.ordered.rename.coarse2 <- data.frame()
-  # create temporary dataframe (RT)
-  df.RT.ordered.rename.sorted.coarse2.temp <- arrange(df.RT.ordered.rename.coarse1.sorted, Name)
-  # create temporary dataframe (Resp)
-  df.Resp.ordered.rename.sorted.coarse2.temp <- arrange(df.Resp.ordered.rename.coarse1.sorted, Name)
-  # loop over all rows
-  for (i in nrow(df.RT.ordered.rename.sorted.coarse2.temp):2){
-    # check if Metabolite name is not NA
-    if (!is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1])){
-      # check if Name is similar to the one above
-      if(df.RT.ordered.rename.sorted.coarse2.temp$Name[i] == df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1]){
-        # all RT values to add
-        values.RT<- df.RT.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse2.temp)-10)]
-        # position of non NA values to add
-        NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse2.temp)-10)]))
-        # loop over all positions and add RT values to previous row (for RT)
-        for (r in 1:length(values.RT)){
-          df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse2.temp[i,r+1])
+}
+# Sort dataframes by RT and names
+df.RT.ordered.rename.coarse1.sorted <- arrange(df.RT.ordered.rename.coarse1 , Mean, Name)
+df.Resp.ordered.rename.coarse1.sorted <- arrange(df.Resp.ordered.rename.coarse1 , Mean, Name)
+
+# Section 6.3 outputs:
+# df.RT.ordered.rename.coarse1.sorted
+# df.Resp.ordered.rename.coarse1.sorted
+
+
+## Step 6.4: Coarse scale 2:same name different RT ----
+
+# initialise dataframe
+df.RT.ordered.rename.coarse2 <- data.frame()
+df.Resp.ordered.rename.coarse2 <- data.frame()
+# create temporary dataframe (RT)
+df.RT.ordered.rename.sorted.coarse2.temp <- arrange(df.RT.ordered.rename.coarse1.sorted, Name)
+# create temporary dataframe (Resp)
+df.Resp.ordered.rename.sorted.coarse2.temp <- arrange(df.Resp.ordered.rename.coarse1.sorted, Name)
+# loop over all rows
+for (i in nrow(df.RT.ordered.rename.sorted.coarse2.temp):2){
+  # check if Metabolite name is not NA
+  if (!is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i]) & !is.na(df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1])){
+    # check if Name is similar to the one above
+    if(df.RT.ordered.rename.sorted.coarse2.temp$Name[i] == df.RT.ordered.rename.sorted.coarse2.temp$Name[i-1]){
+      # all RT values to add
+      values.RT<- df.RT.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.RT.ordered.rename.sorted.coarse2.temp)-10)]
+      # position of non NA values to add
+      NonNAindex.Resp<- which(!is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i,2:(ncol(df.Resp.ordered.rename.sorted.coarse2.temp)-10)]))
+      # loop over all positions and add RT values to previous row (for RT)
+      for (r in 1:length(values.RT)){
+        df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1] <- str_c(df.RT.ordered.rename.sorted.coarse2.temp[i-1,r+1],";",df.RT.ordered.rename.sorted.coarse2.temp[i,r+1])
+      }
+      # loop over all positions and add non NA values to previous row as well as sums (for Resp)
+      for (r in 1:length(NonNAindex.Resp)){
+        if (is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)])){
+          df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
+        } else {
+          df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
+          message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse2.temp[i,1]," Some Response values where summed up during coarse2 scale merging process! Please check intermediate files for details."))
         }
-        # loop over all positions and add non NA values to previous row as well as sums (for Resp)
-        for (r in 1:length(NonNAindex.Resp)){
-          if (is.na(df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)])){
-            df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
-          } else {
-            df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)] <- df.Resp.ordered.rename.sorted.coarse2.temp[i-1, (NonNAindex.Resp[r]+1)]+df.Resp.ordered.rename.sorted.coarse2.temp[i, (NonNAindex.Resp[r]+1)]
-            message(str_c("Message for row ",i,": Compound name: ", df.Resp.ordered.rename.sorted.coarse2.temp[i,1]," Some Response values where summed up during coarse2 scale merging process! Please check intermediate files for details."))
-          }
-        }
-      } else {
-        # add adjusted row to new dataframe
-        df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2, df.RT.ordered.rename.sorted.coarse2.temp[i,])
-        df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[i,])
       }
     } else {
       # add adjusted row to new dataframe
       df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2, df.RT.ordered.rename.sorted.coarse2.temp[i,])
       df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[i,])
     }
+  } else {
+    # add adjusted row to new dataframe
+    df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2, df.RT.ordered.rename.sorted.coarse2.temp[i,])
+    df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[i,])
   }
-  # add first line as well
-  df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2,df.RT.ordered.rename.sorted.coarse2.temp[1,])
-  df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[1,])
-  # separate sample RTs to calculate mean and SD for each row
-  # loop over all rows
-  for (i in 1:nrow(df.RT.ordered.rename.coarse2)){
-    # initialise row RT array
-    row.RT <- c()
-    # loop over all samples
-    for (j in 2:(length(df.RT.ordered.rename.coarse2)-10)){
-      # split entries, write into array and convert to <double>
-      row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse2[[i,j]], ";"))))
-      # correct mean and sd of Retention times and add to Resp data as well
-      df.RT.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
-      df.RT.ordered.rename.coarse2$SD[i] <-sd(row.RT, na.rm = TRUE)
-      df.Resp.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
-      df.Resp.ordered.rename.coarse2$SD[i] <- sd(row.RT, na.rm = TRUE)
-    }
+}
+# add first line as well
+df.RT.ordered.rename.coarse2 <- rbind(df.RT.ordered.rename.coarse2,df.RT.ordered.rename.sorted.coarse2.temp[1,])
+df.Resp.ordered.rename.coarse2 <- rbind(df.Resp.ordered.rename.coarse2, df.Resp.ordered.rename.sorted.coarse2.temp[1,])
+# separate sample RTs to calculate mean and SD for each row
+# loop over all rows
+for (i in 1:nrow(df.RT.ordered.rename.coarse2)){
+  # initialise row RT array
+  row.RT <- c()
+  # loop over all samples
+  for (j in 2:(length(df.RT.ordered.rename.coarse2)-10)){
+    # split entries, write into array and convert to <double>
+    row.RT <- c(row.RT,as.double(unlist(strsplit(df.RT.ordered.rename.coarse2[[i,j]], ";"))))
+    # correct mean and sd of Retention times and add to Resp data as well
+    df.RT.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
+    df.RT.ordered.rename.coarse2$SD[i] <-sd(row.RT, na.rm = TRUE)
+    df.Resp.ordered.rename.coarse2$Mean[i] <- mean(row.RT, na.rm = TRUE)
+    df.Resp.ordered.rename.coarse2$SD[i] <- sd(row.RT, na.rm = TRUE)
   }
-  # Sort dataframes by RT and names
-  df.RT.ordered.rename.coarse2.sorted <- arrange(df.RT.ordered.rename.coarse2 , Mean, Name)
-  df.Resp.ordered.rename.coarse2.sorted <- arrange(df.Resp.ordered.rename.coarse2 , Mean, Name)
+}
+# Sort dataframes by RT and names
+df.RT.ordered.rename.coarse2.sorted <- arrange(df.RT.ordered.rename.coarse2 , Mean, Name)
+df.Resp.ordered.rename.coarse2.sorted <- arrange(df.Resp.ordered.rename.coarse2 , Mean, Name)
   
-#########Test
+# Section 6.4 outputs:
+# df.RT.ordered.rename.coarse2.sorted
+# df.Resp.ordered.rename.coarse2.sorted
+
   
-# Step 7: Plot data 
+### Step 7: Plot retention time distributions (optional) ----
   
 # create output dir
-dir.create(file.path(outfolder,"plots"))
+dir.create(file.path(outfolder,"plots"), showWarnings = FALSE)
 
-# Step 7.1: Plot Distribution of Retention times (on Compound level)
+## Step 7.1: On Compound level ----
 
 # normalise matrix
 # initialise dataframes
@@ -805,63 +830,181 @@ ggplot(subset.clean, aes(x=reorder(Compound, RT), y=RT)) +
 ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.pdf")), width = 40, height = 50, units = "cm")
 ggsave(file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution_v2.png")), width = 40, height = 50, units = "cm")
 
-# Step 7.2: Plot Distribution of Retention times (on Metabolite level)
+# report file generation
+message(str_c("Retention time distribution was plotted on compound level and output ist stored under: ",file.path(outfolder,"plots", str_c(date,"_Retention-time-distribution.pdf"))))
+
+
+## Step 7.2: On metabolite level ----
 
 
 
-# Step 8: Save/Export data  
+### Step 8: Export/Save RT and Resp matrix/dataframes (mandatory) ----
 
 # create output dir
-dir.create(file.path(outfolder,"results"))  
+dir.create(file.path(outfolder,"peak_data"), showWarnings = FALSE) 
 
-#Step 8.1: replace NA values
-matrix.Resp.ordered.rename.sorted.NA <- matrix.Resp.ordered.rename.sorted
-matrix.Resp.ordered.rename.sorted.NA[is.na(matrix.Resp.ordered.rename.sorted.NA)] <- '0'
+# Section 3.1 outputs:
+# matrix.RT.ordered
+# matrix.Resp.ordered
+# matrix.Resp.ordered.NA
 
-#Step 8.2: Save as .tsv files
-write.table(matrix.RT.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Retention-Times.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(matrix.Resp.ordered, file.path(outfolder,"results",paste0(date,"_GCMS_Responses.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-if (exists("matrix.Resp.ordered.norm")){
-  write.table(matrix.Resp.ordered.norm, file.path(outfolder,"results",paste0(date,"_GCMS_Responses_normalised.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+# Section 3.2 outputs:
+# df.RT.ordered
+# df.Resp.ordered
+# df.Resp.ordered.NA
+
+# Section 4 outputs:
+# df.Resp.ordered.norm
+# df.Resp.ordered.norm.NA
+
+# Section 5.2 outputs:
+# query_results
+
+# Section 5.3 outputs:
+# df.RT.ordered.rename
+# df.Resp.ordered.rename
+
+# Section 6.1 outputs:
+# df.RT.ordered.rename.sorted
+# df.Resp.ordered.rename.sorted
+
+# Section 6.2 outputs:
+# df.RT.ordered.rename.fine.sorted
+# df.Resp.ordered.rename.fine.sorted
+
+# Section 6.3 outputs:
+# df.RT.ordered.rename.coarse1.sorted
+# df.Resp.ordered.rename.coarse1.sorted
+
+# Section 6.4 outputs:
+# df.RT.ordered.rename.coarse2.sorted
+# df.Resp.ordered.rename.coarse2.sorted
+
+# polish dataframes for saving:
+df.RT.ordered <- rename(df.RT.ordered, Mean_RT = Mean, SD_RT =SD) %>%
+  arrange(Mean_RT, Compound)
+df.Resp.ordered.NA <- rename(df.Resp.ordered.NA, Mean_RT = Mean, SD_RT =SD) %>%
+  arrange(Mean_RT, Compound)
+if (exists("df.Resp.ordered.norm.NA")){
+  df.Resp.ordered.norm.NA <- rename(df.Resp.ordered.norm.NA, Mean_RT = Mean, SD_RT =SD) %>%
+    arrange(Mean_RT, Compound)
+}
+df.RT.ordered.rename.sorted <- rename(df.RT.ordered.rename.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant)
+df.Resp.ordered.rename.sorted <- rename(df.Resp.ordered.rename.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant)
+for (c in 2:(length(df.Resp.ordered.rename.sorted)-7)){
+  df.Resp.ordered.rename.sorted[,c][is.na(df.Resp.ordered.rename.sorted[,c])] <- 0
+}
+df.RT.ordered.rename.fine.sorted <- rename(df.RT.ordered.rename.fine.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+df.Resp.ordered.rename.fine.sorted <- rename(df.Resp.ordered.rename.fine.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+for (c in 1:(length(df.Resp.ordered.rename.fine.sorted)-7)){
+  df.Resp.ordered.rename.fine.sorted[,c][is.na(df.Resp.ordered.rename.fine.sorted[,c])] <- 0
+}
+df.RT.ordered.rename.coarse1.sorted <- rename(df.RT.ordered.rename.coarse1.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+df.Resp.ordered.rename.coarse1.sorted <- rename(df.Resp.ordered.rename.coarse1.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+for (c in 1:(length(df.Resp.ordered.rename.coarse1.sorted)-7)){
+  df.Resp.ordered.rename.coarse1.sorted[,c][is.na(df.Resp.ordered.rename.coarse1.sorted[,c])] <- 0
+}
+df.RT.ordered.rename.coarse2.sorted <- rename(df.RT.ordered.rename.coarse2.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+df.Resp.ordered.rename.coarse2.sorted <- rename(df.Resp.ordered.rename.coarse2.sorted, Mean_RT = Mean, SD_RT =SD) %>%
+  select( -RT.variant, -Compound)
+for (c in 1:(length(df.Resp.ordered.rename.coarse2.sorted)-7)){
+  df.Resp.ordered.rename.coarse2.sorted[,c][is.na(df.Resp.ordered.rename.coarse2.sorted[,c])] <- 0
 }
 
-#Step 8.3: Save as .xlsx file
+## Step 8.1: Save RT data in .xlsx file format ----
 wb = createWorkbook()
-addWorksheet(wb, "Responses")
-addWorksheet(wb, "Responses.NA")
-addWorksheet(wb, "Retention_times")
-writeData(wb, sheet = 1, matrix.Resp.ordered)
-writeData(wb, sheet = 2, matrix.Resp.ordered.NA)
-writeData(wb, sheet = 3, matrix.RT.ordered)
-if (exists("matrix.Resp.ordered.norm")){
-  addWorksheet(wb, "Responses_normalised")
-  writeData(wb, sheet = 4, matrix.Resp.ordered.norm)
-  addWorksheet(wb, "Responses_normalised.NA")
-  writeData(wb, sheet = 5, matrix.Resp.ordered.norm.NA)
-  addWorksheet(wb, "Retention_times.renamed")
-  writeData(wb, sheet = 6, matrix.RT.ordered.rename.sorted)
-  addWorksheet(wb, "Responses_normalised.renamed")
-  writeData(wb, sheet = 7, matrix.Resp.ordered.rename.sorted)
-  addWorksheet(wb, "Responses_normalised.renamed")
-  writeData(wb, sheet = 8, matrix.Resp.ordered.rename.sorted.NA)
+addWorksheet(wb, "RTs.raw")
+writeData(wb, sheet = 1, df.RT.ordered)
+if (exists("df.Resp.ordered.norm.NA")){
+  addWorksheet(wb, "RTs.raw.norm_(temp)")
+  writeData(wb, sheet = 2, df.RT.ordered)
+  # set sheet number
+  s<-3
 } else {
-  addWorksheet(wb, "Retention_times.renamed")
-  writeData(wb, sheet = 4, matrix.RT.ordered.rename.sorted)
-  addWorksheet(wb, "Responses.renamed")
-  writeData(wb, sheet = 5, matrix.Resp.ordered.rename.sorted)
-  addWorksheet(wb, "Responses_normalised.renamed")
-  writeData(wb, sheet = 6, matrix.Resp.ordered.rename.sorted.NA)
+  s<-2
 }
-saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-results.xlsx")), overwrite = TRUE)
+addWorksheet(wb, "RTs.annotated.sorted")
+writeData(wb, sheet = s, df.RT.ordered.rename.sorted)
+addWorksheet(wb, "RTs.fine-scale")
+writeData(wb, sheet = (s+1), df.RT.ordered.rename.fine.sorted)
+addWorksheet(wb, "RTs.coarse-scale1")
+writeData(wb, sheet = (s+2), df.RT.ordered.rename.coarse1.sorted)
+addWorksheet(wb, "RTs.coarse-scale2")
+writeData(wb, sheet = (s+3), df.RT.ordered.rename.coarse2.sorted)
+saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis-results_retention-times_all-files.xlsx")), overwrite = TRUE)
 
 
+## Step 8.2: Save RT data in .tsv file format ----
+
+# create output dir
+dir.create(file.path(outfolder,"peak_data","tsv"), showWarnings = FALSE)
+
+# save main output files in .tsv format
+write.table(df.RT.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+
+
+## Step 8.3: Save Response data in .xlsx file format ----
+wb = createWorkbook()
+addWorksheet(wb, "Resp.raw")
+writeData(wb, sheet = 1, df.Resp.ordered.NA)
+if (exists("df.Resp.ordered.norm.NA")){
+  addWorksheet(wb, "Resp.raw.norm_(temp)")
+  writeData(wb, sheet = 2, df.Resp.ordered.norm.NA)
+  # set sheet number
+  s<-3
+} else {
+  s<-2
+}
+addWorksheet(wb, "Resp.annotated.sorted")
+writeData(wb, sheet = s, df.Resp.ordered.rename.sorted)
+addWorksheet(wb, "Resp.fine-scale")
+writeData(wb, sheet = (s+1), df.Resp.ordered.rename.fine.sorted)
+addWorksheet(wb, "Resp.coarse-scale1")
+writeData(wb, sheet = (s+2), df.Resp.ordered.rename.coarse1.sorted)
+addWorksheet(wb, "Resp.coarse-scale2")
+writeData(wb, sheet = (s+3), df.Resp.ordered.rename.coarse2.sorted)
+saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis-results_response-data_all-files.xlsx")), overwrite = TRUE)
+
+
+## Step 8.4: Save Response data in .tsv file format ----
+
+# create output dir
+dir.create(file.path(outfolder,"peak_data","tsv"), showWarnings = FALSE) 
+
+# save main output files in .tsv format
+write.table(df.Resp.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+
+# report output file generation
+message(str_c("All MetaPLMA analysis results are saved under: ",file.path(outfolder,"peak_data")))
+
+# open outfolder
+opendir <- function(dir = outfolder){
+  if (.Platform['OS.type'] == "windows"){
+    shell.exec(dir)
+  } else {
+    system(paste(Sys.getenv("R_BROWSER"), dir))
+  }
+}
+opendir()
 
 # Work in Progress
 # Things to do:
-#  - Integrate binning and summary of identical compounds!
 #  - Integrate command line operation
-
-#
 # # add CAS
 # # initialise CAS column 
 # query_results$CAS <- ''
@@ -879,3 +1022,9 @@ saveWorkbook(wb, file.path(outfolder,"results",paste0(date,"_GCMS_analysis-resul
 #   cas<-strsplit(cas.raw, "\"")[[1]][4]
 #   query_results$CAS[i] <- cas 
 # }
+
+
+## Alternative: Inform user about pdf to tsv conversion and ask if data looks good to proceed (R terminal)
+#out <- if (interactive()){
+#  askYesNo("Note: .pdf to .tsv conversion completed successfully. Please check the created .tsv files. \nQuestion: Do they contain the correct information? \n          (Yes: .tsv files will be used automatically for further analysis)\n          (no: Please adjust .tsv files and restart program using the adjusted files) ")
+#}
