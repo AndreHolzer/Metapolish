@@ -28,10 +28,10 @@ The tool can be operated using either a GUI interface, R markdown, or the comman
 
 ### **Quick links:**
 
-- Jump to [Prerequisites](https://github.com/AndreHolzer/MetaPLMA#rrerequisites)
-- Jump to [Installation](https://github.com/AndreHolzer/MetaPLMA#installation)
+- Jump to [Prerequisites](https://github.com/AndreHolzer/MetaPLMA#prerequisites)
+- Jump to [Installing](https://github.com/AndreHolzer/MetaPLMA#installing)
 - Jump to [Usage](https://github.com/AndreHolzer/MetaPLMA#usage)
-- Jump to [Support & Help](https://github.com/AndreHolzer/MetaPLMA#support_&_help)
+- Jump to [Support](https://github.com/AndreHolzer/MetaPLMA#support)
 - Jump to [Citation](https://github.com/AndreHolzer/MetaPLMA#citation)
 
 
@@ -42,18 +42,16 @@ The tool can be operated using either a GUI interface, R markdown, or the comman
 
 - #### **R**
 
-  Install the latest version of R. A full installation guide can be found [here][https://cran.r-project.org/]. 
+  Install the latest version of R. A full installation guide can be found on the [CRAN website](https://cran.r-project.org/). 
 
-  Quick download links (Version 3.6.3):
+  Quick download links (Version 4.0.2):
 
-   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-3.6.3-win.exe)
+   - [R for Windows](https://cran.r-project.org/bin/windows/base/R-4.0.2-win.exe)
 
-   - [R for Mac OS El Capitan and higher](https://cran.r-project.org/bin/macosx/R-3.6.3.nn.pkg)
+   - [R for Mac OS High Sierra and higher](https://cran.r-project.org/bin/macosx/R-4.0.2.pkg)
 
-   - [R for Mac OS Catalina](https://cran.r-project.org/bin/macosx/R-3.6.3.pkg)
-  
    - [R for Linux](https://cran.r-project.org/bin/linux/)
-
+  
      
 
 - #### **RStudio**
@@ -94,12 +92,12 @@ The tool takes two different inputs, the GC/MS peak data (metabolite vs. peak in
 
 1. ##### GCMS data (required)
 
-   GCMS data must contain information on Compounds, Response time and Response and can be provided in several formats: 
+   GCMS data must contain information on Compounds, Response time (RT) and Peak Intensity (Response) and can be provided in several formats: 
 
-   - `.pdf`: format from Thermo analysis output is supported and once loaded will be converted into .tsv format ([see example input](example_data/Thermo-example_output_1.pdf))
-   - `.tsv`: format containing three columns (Compound, Retention time, Response) ([see example input](example_data/Sample1.tsv))
-   - `.csv`: format containing three columns (Compound, Retention time, Response) ([see example input](example_data/Sample1.tsv))
-   - `.xlsx`: format with first sheet containing three columns (Compound, Retention time, Response)  ([see example input](example_data/Sample1.tsv))
+   - `.pdf`: format from Thermo analysis output is supported and once loaded will be converted into .tsv format ([see example input](https://github.com/AndreHolzer/MetaPLMA/blob/master/example_data/input/Thermo-Xcaliber-Tracefinder/Thermo-example_output_1.pdf))
+   - `.tsv`: format containing three columns (Compound, Retention time, Response) ([see example input](https://github.com/AndreHolzer/MetaPLMA/blob/master/example_data/input/Sample1.tsv))
+   - `.csv`: format containing three columns (Compound, Retention time, Response) ([see example input](https://github.com/AndreHolzer/MetaPLMA/blob/master/example_data/input/Sample1.tsv))
+   - `.xlsx`: format with first sheet containing three columns (Compound, Retention time, Response) or in Shimadzu output format ([see example input](https://github.com/AndreHolzer/MetaPLMA/blob/master/example_data/input/Shimadzu_GCMSsolution/1_1_fame.xlsx))
 
    
 
@@ -121,7 +119,7 @@ The tool takes two different inputs, the GC/MS peak data (metabolite vs. peak in
 
 #### **Modes of execution**
 
-- ##### Fully automated (GUI)
+- ##### Fast track (GUI interface and progress log) (<u>*coming soon*</u>)
 
   > **IMPORTANT**: NOT CURRENTLY SUPPORTED (WORK IN PROGRESS)
 
@@ -132,26 +130,26 @@ The tool takes two different inputs, the GC/MS peak data (metabolite vs. peak in
 
   
 
-- ##### Interactive (GUI + error reporting)
+- ##### Full interactive track (GUI + progress log + full error reporting + code interaction possible)
 
   - Start RStudio and load/open the main analysis script ([MetaPLMA_main-anaylsis-script.R](scripts/MetaPLMA_main-anaylsis-script.R)) from the scripts folder
-  - Klick Source to start the analysis
+  - Klick Source to run the analysis
 
-  > **IMPORTANT**: Once the analysis has finished check progress log to see whether there were any errors.
+  > **IMPORTANT**: Once the analysis has finished check progress log and console to see whether there were any errors.
 
   
 
 #### **Data Output**
 
-A main output folder `<date>_GCSM-analysis-results` will be created under the select output directory which will include up to three output subfolder: `pdf2tsv` stores information that was extracted from from .pdf files (if input files where of this type), `plots` stores all plots generated, and `results` stores all matrixes containing retention time and response data for all sample.
+A main output folder `<date>_GCSM-analysis-results` will be created under the select output directory which will include up to three output subfolder: `pdf2tsv` stores information that was extracted from from .pdf files (if input files where of this type), `plots` stores all plots generated, and `peak_data` stores all matrixes containing retention time and response data for all sample.
 
-A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-results/results/<date>_GCMS_analysis-results.xlsx`.
+A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_retention-times_all-files.xlsx.xlsx` and `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_response-data_all-files.xlsx.xlsx` .
 
 
 
-## Support & Help
+## Support
 
-If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=ATAC-Seq_pipeline), or file a [GitHub issue](https://github.com/AndreHolzer/GDatEx/issues). Please use issues to the GitHub repository for feature requests or bug reports.
+If you have questions or suggestions, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=ATAC-Seq_pipeline), or file a [GitHub issue](https://github.com/AndreHolzer/MetaPLMA/issues). Please use issues to the GitHub repository for feature requests or bug reports.
 
 
 
@@ -159,7 +157,7 @@ If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com
 
 **If you use this pipeline for your analysis, please don't forget to cite:**
 
-**DOI: …**
+**DOI: …** (*<u>coming soon, please get in contact before using the tool</u>*)
 
 
 
@@ -169,5 +167,5 @@ If you have questions or suggestions, mail us at [andre.holzer.biotech@gmail.com
 
 - **Matthew P Davey ** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [https://orcid.org/0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
 
-We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
+We would like to thank Monika Krolikowski for trailing the software. We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
 
