@@ -1,6 +1,6 @@
 # MetaPLMA - Metabolite Peak List Merge & Annotation Tool
 
-![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Under active development!) 
+![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg) ![DOI](https://img.shields.io/badge/DOI-...-green.svg)
 
 This tool is written in **R** and allows the reproducible and scalable data processing of peak information acquired trough **Gas Chromatography Mass Spectrometry (GC/MS)**. The tool bridges the gap between the output of pre-analysis software like [**Thermo Xcalibur-TraceFinder**](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/lc-ms-data-acquisition-software/tracefinder-software.html) or [**Shimadzu GCMS solution**](https://www.ssi.shimadzu.com/products/gas-chromatography-mass-spectrometry/gcmssolution-software.html) and required input formats for downstream metabolite analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
 
