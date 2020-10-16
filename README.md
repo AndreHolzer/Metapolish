@@ -8,7 +8,7 @@ The software is very easy to install, includes additional plotting and reporting
 
 <figure class="image" >
   <p align="center"> 
-    <img src="https://github.com/AndreHolzer/MetaPLMA/blob/master/images/MetaPLM-workflow.png?raw=true" width="600">
+    <img src="https://github.com/AndreHolzer/MetaPLMA/blob/master/images/MetaPLM-workflow.png?raw=true" width="500">
     <br>
     <em><b>Fig. 1:</b> Schematic diagram displaying the individual files and steps of the tool</em>
    </p> 
