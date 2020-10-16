@@ -30,6 +30,7 @@ A more detailed functionality documentation can be found as part of the MetaPLMA
 - Jump to [Prerequisites](https://github.com/AndreHolzer/MetaPLMA#prerequisites)
 - Jump to [Installing](https://github.com/AndreHolzer/MetaPLMA#installing)
 - Jump to [Usage](https://github.com/AndreHolzer/MetaPLMA#usage)
+- Jump to [Example/Test analysis](https://github.com/AndreHolzer/MetaPLMA#example/test_analysis)
 - Jump to [Support](https://github.com/AndreHolzer/MetaPLMA#support)
 - Jump to [Citation](https://github.com/AndreHolzer/MetaPLMA#citation)
 
