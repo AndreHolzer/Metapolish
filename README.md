@@ -158,7 +158,7 @@ A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-r
 The tool comes with a set of GC-MS and LC-MS example data which is deposited in the [example_data](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_data) folder. We recommend using this data for testing and training purposes. For a detailed usage example and tool guide, please have a look into the [example_analysis](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_analysis) folder.
 
 
-## Support & Contribution
+## Support
 
 If you have questions, suggestions or would like to contribute, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=MetaPLMA). Please use [GitHub issues](https://github.com/AndreHolzer/MetaPLMA/issues) for feature requests or bug reports.
 
