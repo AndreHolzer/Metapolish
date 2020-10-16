@@ -174,9 +174,9 @@ If you have questions, suggestions or would like to contribute, email us at [and
 
 #### **Developers**
 
-- **Andre Holzer** - *PhD Student, Department of Plant Sciences, Univeristy of Cambridge* [https://orcid.org/0000-0003-2439-6364][https://orcid.org/0000-0003-2439-6364]
+- **Andre Holzer** - *PhD Student, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0003-2439-6364](https://orcid.org/0000-0003-2439-6364)
 
-- **Matthew P Davey** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [https://orcid.org/0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
+- **Matthew P Davey** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
 
 We would like to thank Monika Krolikowski for trailing the software. We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
 
