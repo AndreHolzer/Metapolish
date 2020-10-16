@@ -1,6 +1,6 @@
 # MetaPLMA - Metabolite Peak List Merge & Annotation Tool
 
-![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Work in progress!) 
+![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg)(Under active development!) 
 
 This tool is written in **R** and allows the reproducible and scalable data processing of peak information acquired trough **Gas Chromatography Mass Spectrometry (GC/MS)**. The tool bridges the gap between the output of pre-analysis software like [**Thermo Xcalibur-TraceFinder**](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/lc-ms-data-acquisition-software/tracefinder-software.html) or [**Shimadzu GCMS solution**](https://www.ssi.shimadzu.com/products/gas-chromatography-mass-spectrometry/gcmssolution-software.html) and required input formats for downstream metabolite analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
 
@@ -17,13 +17,12 @@ The software is very easy to install, includes additional plotting and reporting
 The tool can be operated using either a GUI interface, R markdown, or the command line (the latter which is still work in progress). The tool has been tested on both Mac and Windows operating systems, analysing GC/MS data obtained from different algae samples. 
 
 
-
-
-### Features
+### Key Features
 
 - **Simplicity**: The tool provides reproducible and scalable data analysis which can be executed across operating systems.
 - **Integrated data extraction from .pdf and .xlsx files of common peak quantification tools**: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo Xcalibur-TraceFinder or Shimadzu GCMS solution.
 
+A more detailed functionality documentation can be found as part of the MetaPLMA publication: doi... (coming soon) 
 
 
 ### **Quick links:**
@@ -154,10 +153,14 @@ A main output folder `<date>_GCSM-analysis-results` will be created under the se
 A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_retention-times_all-files.xlsx.xlsx` and `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_response-data_all-files.xlsx.xlsx` .
 
 
+## Example/Test analysis
 
-## Support
+The tool comes with a set of GC-MS and LC-MS example data which is deposited in the [example_data](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_data) folder. We recommend using this data for testing and training purposes. For a detailed usage example and tool guide, please have a look into the [example_analysis](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_analysis) folder.
 
-If you have questions or suggestions, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=ATAC-Seq_pipeline), or file a [GitHub issue](https://github.com/AndreHolzer/MetaPLMA/issues). Please use issues to the GitHub repository for feature requests or bug reports.
+
+## Support & Contribution
+
+If you have questions, suggestions or would like to contribute, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=MetaPLMA). Please use [GitHub issues](https://github.com/AndreHolzer/MetaPLMA/issues) for feature requests or bug reports.
 
 
 
@@ -177,3 +180,6 @@ If you have questions or suggestions, email us at [andre.holzer.biotech@gmail.co
 
 We would like to thank Monika Krolikowski for trailing the software. We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
 
+#### **MIT License**
+
+https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE
