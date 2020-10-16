@@ -53,7 +53,6 @@ The tool can be operated using either a GUI interface, R markdown, or the comman
    - [R for Linux](https://cran.r-project.org/bin/linux/)
   
      
-
 - #### **RStudio**
 
   Install the latest version of RStudio. More information can be found [here](https://rstudio.com).
@@ -65,6 +64,15 @@ The tool can be operated using either a GUI interface, R markdown, or the comman
    - [RStudio for Mac](https://rstudio.com/products/rstudio/download/#download)
 
    - [RStudio for Linux](https://rstudio.com/products/rstudio/download/#download)
+
+
+- #### **XQuartz (for MacOS users only)**
+
+  Install the latest version of XQuartz. More information can be found [here](https://www.xquartz.org).
+
+  Quick download links:
+
+   - [XQuartz for OS X 10.6.3 or later](https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg)
 
 
 
