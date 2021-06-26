@@ -188,4 +188,4 @@ We would like to thank Monika Krolikowski for trailing the software. We'd also l
 
 RESEARCH PURPOSES ONLY!
 
-For more details see: https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE
+For more details view [full license agreement](https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE)
