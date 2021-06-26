@@ -6,7 +6,7 @@ cat("=============================\n")
 ## Step 0.1: Load packages ----
 
 # define packages, install and load them
-list.of.packages = c("here","tidyverse","knitr","tcltk","readxl","matrixStats","openxlsx","tools","stringr","utils","pdftools","ggplot2","ggpubr","BBmisc","ggsci","scales","RColorBrewer","devtools","RJSONIO","httr")
+list.of.packages = c("here","tidyverse","knitr","tcltk","readxl","matrixStats","openxlsx","purrr","dplyr","tools","stringr","utils","pdftools","ggplot2","ggpubr","BBmisc","ggsci","scales","RColorBrewer","devtools","RJSONIO","httr","data.table")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages) > 0) {install.packages(new.packages)}
 lapply(list.of.packages, require, character.only=T)
@@ -29,6 +29,11 @@ dir.create(outfolder, showWarnings = FALSE)
 # report step
 message(str_c("\nINFO: Initialisation completed successfully"))
 
+# remove NULL function
+nullToNA <- function(x) {
+  x[sapply(x, is.null)] <- "NA"
+  return(x)
+}
 
 ### Step 1: Read peak data input files (mandatory) ----
 cat("\n\n=============================\n")
@@ -534,17 +539,20 @@ query_results$status_code==200
 # Parse the response into a table
 query_results_text <- content(query_results, "text", encoding = "UTF-8")
 query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
-query_results_table <- t(rbind.data.frame(query_results_json))
-rownames(query_results_table) <- query_results_table[,1]
+# replae NULL values with NA
+Query <- unlist(nullToNA(query_results_json[[1]]))
+Match <- unlist(nullToNA(query_results_json[[2]]))
+HMDB <- unlist(nullToNA(query_results_json[[3]]))
+PubChem <- unlist(nullToNA(query_results_json[[4]]))
+ChEBI <- unlist(nullToNA(query_results_json[[5]]))
+KEGG <- unlist(nullToNA(query_results_json[[6]]))
+METLIN <- unlist(nullToNA(query_results_json[[7]]))
+SMILES <- unlist(nullToNA(query_results_json[[8]]))
+query_results_table <- data.frame(Query,Match, HMDB, PubChem, ChEBI ,KEGG, METLIN, SMILES)
 query_results <- as_tibble(query_results_table) %>%
-  select(-smiles)%>%
-  rename(Name=query)%>%
-  rename(Metabolite=hit)%>%
-  rename(HMDB=hmdb_id)%>%
-  rename(PubChem=pubchem_id)%>%
-  rename(ChEBI=chebi_id)%>%
-  rename(KEGG=kegg_id)%>%
-  rename(METLIN=metlin_id)
+  select(-SMILES)%>%
+  rename(Name=Query)%>%
+  rename(Metabolite=Match)
   
 # write name metabolite conversion to file
 write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
@@ -552,12 +560,14 @@ write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(dat
 message(str_c("\nINFO: Compound names were translated to metabolite names using MetaboAnalysist API and results are stored under: ",file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv"))))
 
 # give summary and ask user
-hits<-table(query_results$Metabolite)[1]
-total<-nrow(query_results)
-perc<-round(table(query_results$Metabolite)[1]/nrow(query_results)*100,1)
+query_results_NA<- filter(query_results, Metabolite =="NA")
+nohits<-sum(table(query_results_NA$Metabolite))
+htotal<-nrow(query_results)
+hits <-htotal-nohits
+perc<-round(hits/htotal*100,1)
   
 # Inform user about conversion and ask how he wants to proceed
-out <- tk_messageBox(type = "yesno", message = str_c("Note: compound to metabolite conversion completed! \n\n",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites.\n\nWe recommend to check the conversion and make manual adjustments if required. \n\nDo you want to edit the conversion now?"), caption = "Question", default = "")
+out <- tk_messageBox(type = "yesno", message = str_c("Note: compound to metabolite conversion completed! \n\n",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites.\n\nWe recommend to check the conversion and make manual adjustments if required. \n\nDo you want to edit the conversion now?"), caption = "Question", default = "")
   
 if(out != "no"){
   url <- "https://www.metaboanalyst.ca/MetaboAnalyst/upload/ConvertView.xhtml"
@@ -567,8 +577,8 @@ if(out != "no"){
   # upload optimized name conversion sheet
   if(out == "ok"){
     # GUI to allow user selection
-    filters <- matrix(c("All accepted",".tsv .csv","Comma seperated files",".csv","Tab seperated files",".tsv"), 3, 2, byrow = TRUE)
-    file <- tk_choose.files(caption = "Choose optimised ID conversion files", multi = FALSE, filter = filters)
+    filters <- matrix(c("All accepted",".tsv .csv","Comma seperated file",".csv","Tab seperated file",".tsv"), 3, 2, byrow = TRUE)
+    file <- tk_choose.files(caption = "Choose optimised ID conversion file", multi = FALSE, filter = filters)
       
     # import file
     # select correct file format
@@ -578,26 +588,26 @@ if(out != "no"){
     # load csv data    
     if(file_format == "csv"){
       query_results_raw<- read_csv(file, na = c("", "NA"), col_names = TRUE)
+      query_results<-select(query_results_raw, -Comment)%>%
+      rename(Metabolite = Match) %>%
+      rename(Name = Query)
     }
       
     # load tsv or txt data    
     if(file_format == "tsv" | file_format == "txt"){
       query_results_raw<- read_tsv(file, na = c("", "NA"), col_names = TRUE)
+      query_results<-query_results_raw
     }
-      
-    query_results<-select(query_results_raw, -Comment)%>%
-      rename(Metabolite = Match) %>%
-      rename(Name = Query)
     
     # write name metabolite conversion to file
     write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion_manual.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
   }
   # report step
-  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites. Data was further manually edited."))
+  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites. Data was further manually edited."))
 } 
 if(out == "no"){
   # report step
-  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",total," (",perc,"%) compounds could automatically be translated into metabolites. Data was NOT further manually edited."))
+  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites. Data was NOT further manually edited."))
 }
 
 # Section 5.2 outputs:
