@@ -52,7 +52,6 @@ A more detailed functionality documentation can be found as part of the MetaPLMA
 
    - [R for Linux](https://cran.r-project.org/bin/linux/)
   
-     
 - #### **RStudio**
 
   Install the latest version of RStudio. More information can be found [here](https://rstudio.com).
@@ -154,9 +153,11 @@ A main output folder `<date>_GCSM-analysis-results` will be created under the se
 A final summary of the RT and Response data is stored in `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_retention-times_all-files.xlsx.xlsx` and `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_response-data_all-files.xlsx.xlsx` .
 
 
+
 ## Example/Test analysis
 
 The tool comes with a set of GC-MS and LC-MS example data which is deposited in the [example_data](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_data) folder. We recommend using this data for testing and training purposes. For a detailed usage example and tool guide, please have a look into the [example_analysis](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_analysis) folder.
+
 
 
 ## Support
@@ -181,6 +182,10 @@ If you have questions, suggestions or would like to contribute, email us at [and
 
 We would like to thank Monika Krolikowski for trailing the software. We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
 
-#### **MIT License**
 
-https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE
+
+#### License
+
+RESEARCH PURPOSES ONLY!
+
+For more details see: https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE
