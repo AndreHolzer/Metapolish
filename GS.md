@@ -8,9 +8,8 @@
 MetaPLMS was written so it can be executed in all operating systems. This page gives detailed instructions on how to set up the prerequired software for each operating system. 
 
 
-## 1. Install the latest version of R
- 
- A full installation guide can be found on the [CRAN website](https://cran.r-project.org/). 
+### 1. Install the latest version of R
+A full installation guide for R can be found on the [CRAN website](https://cran.r-project.org/). 
 
  Quick download links (Version 4.0.2):
 
@@ -20,11 +19,10 @@ MetaPLMS was written so it can be executed in all operating systems. This page g
 
    - [R for Linux](https://cran.r-project.org/bin/linux/)
   
-- ### **RStudio**
+### 2. Install the latest version of RStudio
+More information can be found on the [RStudio website](https://rstudio.com).
 
-  Install the latest version of RStudio. More information can be found [here](https://rstudio.com).
-
-  Quick download links:
+  Quick download links (newest version):
 
    - [RStudio for Windows](https://rstudio.com/products/rstudio/download/#download)
 
@@ -33,13 +31,12 @@ MetaPLMS was written so it can be executed in all operating systems. This page g
    - [RStudio for Linux](https://rstudio.com/products/rstudio/download/#download)
 
 
-- ### **XQuartz (for MacOS users only)**
+### 3. Install the latest version of XQuartz (for MacOS users only)
+Mac users will need to have xQuartz isntalled in order for MetaPLMA to operate normally. More information on insatlling XQuartz can be found [here](https://www.xquartz.org).
 
-  Install the latest version of XQuartz. More information can be found [here](https://www.xquartz.org).
-
-  Quick download links:
+  Quick download links (version 2.7.11):
 
    - [XQuartz for OS X 10.6.3 or later](https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg)
    
    
- Once all required rrerequisites have been installed on your system, you can continue with the next section.
+ Once all prerequisites have been installed on your system, you can continue with [installing MetaPLMA](GS_M.md)
