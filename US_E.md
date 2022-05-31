@@ -25,21 +25,21 @@ To excute MetaPLMA simply following the steps below:
 Now the software will start setting up all the required packages for the analysis. This process might take several minutes espcially the first time you are excuting this script. You can follow the progress in the *Console* window at the bottom of RStudio. This is in red but don’t worry, that’s ok.
 
 Once the package installation is completed, the first GUI will pop up to let you define your working directory (Location where the programme will store the output folder and files).
-  <img src="images/US_E_4.png" height="400px">
+  <img src="images/US_E_4.png" height="300px">
   Press okay to confirm your location of choise. 
 
 #### Step 1: Read peak data input files
 Another GUI will pop up allowing you to select your GCMS files to be analyses. Note that a single as well as multiple files of the same file type can be analysed and combined at the same time.
-  <img src="images/US_E_5.png" height="400px">
-  <img src="images/US_E_6.png" height="400px">
+  <img src="images/US_E_5.png" height="300px">
+  <img src="images/US_E_6.png" height="300px">
 Select all files to be analyse and press open.
 
 If you have provided files in .xlxs format you will be asked whether the files are direct Shimadzu output files or manually curated .xlxs. In the former case, the program will covert the Shimadzu files into the standrad table format.
-  <img src="images/US_E_7.png" height="400px">
+  <img src="images/US_E_7.png" height="300px">
   
 #### Step 2: Load dry weight data (optional)  
 You are then asked to select the file containg your sample dry weight information for normalisation. 
-  <img src="images/US_E_8.png" height="400px">
+  <img src="images/US_E_8.png" height="300px">
 Click open once selected or cancel if you don't want to perform dry weight normalisation.
 
 #### Step 3-5: Merge sample information into a matrix, normalise response data & convert compound names into metabolite names
