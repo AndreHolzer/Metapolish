@@ -18,9 +18,9 @@ Go to the [MetePLMA GitHub page](https://github.com/AndreHolzer/MetaPLMA) and do
 
 <img src="images/GS_T_1.png" height="400px">
 
-- [Quick download](https://github.com/AndreHolzer/MetaPLMA/archive/master.zip)
+- [Quick download of latest version](https://github.com/AndreHolzer/MetaPLMA/archive/master.zip)
 
-Unzip the folder using a common archive managing software such as [7zip](https://www.7-zip.org)
+- Unzip the folder using a common archive managing software such as [7zip](https://www.7-zip.org)
 
 
 ----
