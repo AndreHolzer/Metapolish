@@ -13,7 +13,7 @@ Get the latest version/release of the tool using the Pull or Git clone command
  git clone https://github.com/AndreHolzer/MetaPLMA --recursive
 ```
 
-### for Windows: 
+### Alternatively or for Windows: 
 Go to the [MetePLMA GitHub page](https://github.com/AndreHolzer/MetaPLMA) and download the latest release as .zip file 
 
 <img src="images/GS_T_1.png" height="400px">
