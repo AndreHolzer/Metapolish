@@ -10,15 +10,15 @@ As of the current version the full interactive mode does not require any knowled
 To excute MetaPLMA simply following the steps below: 
 
 1. Start RStudio on your computer
-  <img src="images/US_E_1.png" height="400px">
+  </br><img src="images/US_E_1.png" height="400px"></br>
   
 2. Load/open the main analysis script ([MetaPLMA_main-anaylsis-script.R](scripts/MetaPLMA_main-anaylsis-script.R)) from the MetaPLMA folder you have previously downloaded.
   - File -> Open File -> Select MetaPLMA_main-anaylsis-script in ~/Downloads/MetaPLMA-master/scripts
   - Click install if asked to install additional R packages
-  <img src="images/US_E_2.png" height="400px">
+  </br><img src="images/US_E_2.png" height="400px"></br>
   
 3. Klick *Source* to run the analysis
-  <img src="images/US_E_3.png" height="400px">
+  </br><img src="images/US_E_3.png" height="400px"></br>
  
 ----
 ## Mode of execution
