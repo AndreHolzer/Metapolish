@@ -35,6 +35,9 @@ A more detailed functionality documentation can be found as part of the MetaPLMA
 - Jump to [Citation](https://github.com/AndreHolzer/MetaPLMA#citation)
 
 
+Find the full documentation here: 
+[https://andreholzer.github.io/MetaPLMA/](https://andreholzer.github.io/MetaPLMA/)
+
 
 ## Getting Started
 
