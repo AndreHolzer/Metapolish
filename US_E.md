@@ -72,4 +72,4 @@ Once proceeded with the analysis the datfarmes wil be sorted, condensed, used to
 > **IMPORTANT**: Once the analysis has finished check progress log and console to see whether there were any errors.
   
 ----
-Now let's have a look at [the output](US_O.md)
+Now let's have a look at [the output](AP.md)
