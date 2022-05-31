@@ -24,6 +24,10 @@ The tool can be operated using either a GUI interface, R markdown, or the comman
 
 A more detailed functionality documentation can be found as part of the MetaPLMA publication: doi... (coming soon) 
 
+### **Documentation:**
+
+Find the **full documentation** here: 
+[https://andreholzer.github.io/MetaPLMA/](https://andreholzer.github.io/MetaPLMA/)
 
 ### **Quick links:**
 
@@ -33,10 +37,6 @@ A more detailed functionality documentation can be found as part of the MetaPLMA
 - Jump to [Example/Test analysis](https://github.com/AndreHolzer/MetaPLMA#example/test_analysis)
 - Jump to [Support](https://github.com/AndreHolzer/MetaPLMA#support)
 - Jump to [Citation](https://github.com/AndreHolzer/MetaPLMA#citation)
-
-
-Find the full documentation here: 
-[https://andreholzer.github.io/MetaPLMA/](https://andreholzer.github.io/MetaPLMA/)
 
 
 ## Getting Started
