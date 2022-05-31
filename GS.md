@@ -1,6 +1,6 @@
 # Getting Started
 
-[{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](index.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](GS_P.md)
+[{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](index.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](GS_T.md)
 
 ----
 ## Prerequisites
@@ -39,4 +39,4 @@ Mac users will need to have xQuartz isntalled in order for MetaPLMA to operate n
    - [XQuartz for OS X 10.6.3 or later](https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg)
    
    
- Once all prerequisites have been installed on your system, you can continue with [installing MetaPLMA](GS_M.md)
+ Once all prerequisites have been installed on your system, you can continue with [installing MetaPLMA](GS_T.md)
