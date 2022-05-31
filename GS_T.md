@@ -16,7 +16,7 @@ Get the latest version/release of the tool using the Pull or Git clone command
 ### for Windows: 
 Go to the [MetePLMA GitHub page](https://github.com/AndreHolzer/MetaPLMA) and download the latest release as .zip file 
 
-<img src="figures/GS_T_1.png" height="400px">
+<img src="images/GS_T_1.png" height="400px">
 
 - [Quick download](https://github.com/AndreHolzer/MetaPLMA/archive/master.zip)
 
