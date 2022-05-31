@@ -37,5 +37,6 @@ Mac users will need to have xQuartz isntalled in order for MetaPLMA to operate n
 
    - [XQuartz for OS X 10.6.3 or later](https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg)
    
-   
+ 
+ ----
  Once all prerequisites have been installed on your system, you can continue with [installing MetaPLMA](GS_T.md)
