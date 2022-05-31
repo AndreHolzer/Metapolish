@@ -5,8 +5,7 @@
 ----
 ## Prerequisites
 
-MetaPLMS was written so it can be executed in all operating systems. This page gives detailed instructions on how to set up the prerequired software for each operating system. 
-
+MetaPLMS was written so it can be executed on all operating systems. This page gives detailed instructions on how to set up the required software to run the tool on Linux, Windows or MacOS operating systems. 
 
 ### 1. Install the latest version of R
 A full installation guide for R can be found on the [CRAN website](https://cran.r-project.org/). 
