@@ -2,4 +2,4 @@ theme: jekyll-theme-cayman
 gems:
   - jekyll-octicons
 title: Introduction to MetaPLMA
-description: Metabolite Peak List Merge & Annotation Tool: A platform independent R tool to merge and annotate metabolite-peak data from GC/MS runs
+description: Metabolite Peak List Merge \& Annotation Tool: A platform independent R tool to merge and annotate metabolite-peak data from GCMS runs
