@@ -1,4 +1,4 @@
-# Execute MetePLMA 
+# Execute MetaPLMA 
 
 [{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](US.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](US_.md)
 
@@ -21,7 +21,7 @@ To excute MetaPLMA simply following the steps below:
   </br><img src="images/US_E_3.png" height="400px"></br>
  
 ----
-## Mode of execution
+## Step by step explanation
 
 ### Step 0: Initialisation
 Now the software will start setting up all the required packages for the analysis. This process might take several minutes espcially the first time you are excuting this script. You can follow the progress in the *Console* window at the bottom of RStudio. This is in red but don’t worry, that’s ok.
