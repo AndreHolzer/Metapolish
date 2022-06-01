@@ -1,10 +1,10 @@
-# MetaPLMA - Metabolite Peak List Merge & Annotation Tool
+# MetaPLMA - Metabolite Peak List Merge & Annotation & Polishing Tool
 
 ![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: REASEARCH ONLY](https://img.shields.io/badge/License-RESEARCH-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg) ![DOI](https://img.shields.io/badge/DOI-...-green.svg)
 
-This tool is written in **R** and allows the reproducible and scalable data processing of peak information acquired trough **Gas Chromatography Mass Spectrometry (GC/MS)**. The tool bridges the gap between the output of pre-analysis software like [**Thermo Xcalibur-TraceFinder**](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/lc-ms-data-acquisition-software/tracefinder-software.html) or [**Shimadzu GCMS solution**](https://www.ssi.shimadzu.com/products/gas-chromatography-mass-spectrometry/gcmssolution-software.html) and required input formats for downstream metabolite analysis using common tools such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
+MetaPLMA is a **R** tool that allows easy data processing of common **Liquid- or Gas Chromatography Mass Spectrometry (LC-/GCMS)** raw peak data. The tool bridges the gap between the output of MS-analysis software like [**Thermo Xcalibur-TraceFinder**](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/lc-ms-data-acquisition-software/tracefinder-software.html) or [**Shimadzu GCMS solution**](https://www.ssi.shimadzu.com/products/gas-chromatography-mass-spectrometry/gcmssolution-software.html) and downstream metabolite analysis applications such as [**MetaboAnalyst**](https://www.metaboanalyst.ca). 
 
-The software is very easy to install, includes additional plotting and reporting functions and can be run on machines operating **Windows**, **Mac OS** or **Linux**. It reads in individual pre-processed GC/MS data files containing metabolite-peak data of single samples, collects additional sample information regarding dry weight and creates condensed and normalised **Compound-Concentration Matrix** outputs suitable for further downstream analysis. Up to 198 input files of the type .pdf, .tsv, .csv, .txt or .xlsx can be processed at the same time.  
+The software is very easy to install, includes additional plotting and reporting functions and can be run on machines operating **Windows**, **Mac OS** or **Linux** in a reporducible and scalable manner. It reads in individual pre-processed LC-/GCMS data files containing compound-peak data of single samples, collects additional sample information regarding dry weight and creates normalised and polished **Metabolite-Concentration Matrix** outputs at different lebels of condensation suitable for further downstream analysis. Up to 198 input files of the type .pdf, .tsv, .csv, .txt or .xlsx can be processed at the same time.  
 
 <figure class="image" >
   <p align="center"> 
@@ -14,15 +14,14 @@ The software is very easy to install, includes additional plotting and reporting
    </p> 
 </figure>
 
-The tool can be operated using either a GUI interface, R markdown, or the command line (the latter which is still work in progress). The tool has been tested on both Mac and Windows operating systems, analysing GC/MS data obtained from different algae samples. 
+The tool can be operated following graphical user interphases (GUI) on top of unerlying R markdown scripts. The tool has been tested on both Mac and Windows operating systems, predominatly analysing GC/MS data obtained from different algae samples. 
+
 
 
 ### Key Features
 
 - **Simplicity**: The tool provides reproducible and scalable data analysis which can be executed across operating systems.
 - **Integrated data extraction from .pdf and .xlsx files of common peak quantification tools**: Starting from .pdf files the tool allows easy extraction of GC/MS summary data from common pre-processing tools such as Thermo Xcalibur-TraceFinder or Shimadzu GCMS solution.
-
-A more detailed functionality documentation can be found as part of the MetaPLMA publication: doi... (coming soon) 
 
 
 
