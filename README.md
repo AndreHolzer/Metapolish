@@ -1,4 +1,4 @@
-# <u>Metapolish</u> - the merging, annotation & polishing tool for metabolite peak list data <a href='https://github.com/AndreHolzer/Metapolish'><img src='images/metapolish-hex.png' align="right" height="200" /></a>
+# <u>Metapolish</u> - the merging, annotation & polishing tool for metabolite peak list data <a href='https://github.com/AndreHolzer/Metapolish'><img src='images/metapolish-hex.png' align="right" height="300" /></a>
 
 ![Scripting](https://img.shields.io/badge/Language-R-red.svg) [![License: REASEARCH ONLY](https://img.shields.io/badge/License-RESEARCH-yellow.svg)](LICENSE) ![Current Version](https://img.shields.io/badge/Version-v1.0-blue.svg) ![DOI](https://img.shields.io/badge/DOI-...-green.svg)
 
