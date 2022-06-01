@@ -570,15 +570,29 @@ perc<-round(hits/htotal*100,1)
 out <- tk_messageBox(type = "yesno", message = str_c("Note: compound to metabolite conversion completed! \n\n",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites.\n\nWe recommend to check the conversion and make manual adjustments if required. \n\nDo you want to edit the conversion now?"), caption = "Question", default = "")
   
 if(out != "no"){
+  
+  # open MetaboAnalyst conversion tool
   url <- "https://www.metaboanalyst.ca/MetaboAnalyst/upload/ConvertView.xhtml"
   browseURL(url, browser = getOption("browser"), encodeIfNeeded = FALSE)
-  out<- tk_messageBox(type = "ok", message = str_c("Please edit the <DATE>_name-list.tsv file manually and upload it here.\n\n The file can be found in the compound2metabolite subfolder of your output directory. Once submitted you can make some adjustements within MetaboAnalysit. Once you are done please make sure you download the file again and confirm with the ok button"))
   
+  # open outfolder
+  opendir_1 <- function(dir = file.path(outfolder,"compound2metabolite")){
+    if (.Platform['OS.type'] == "windows"){
+      shell.exec(dir)
+    } else {
+      system(paste(Sys.getenv("R_BROWSER"), dir))
+    }
+  }
+  opendir_1()
+  
+  # open GUI
+  out<- tk_messageBox(type = "ok", message = str_c("Please adjust the '<date>_name-to-metabolite-conversion' file.\n\nThe file can be found in the compound2metabolite subfolder of your selected output directory. The first column must not be edited, only the metabolite information should be completed.\n\nTo help translating names to metabolites you can use the Metabolite ID Conversion tool from MetaboAnalyst.\n\nOnce you have completed your edits click 'ok'."))
+
   # upload optimized name conversion sheet
   if(out == "ok"){
     # GUI to allow user selection
     filters <- matrix(c("All accepted",".tsv .csv","Comma seperated file",".csv","Tab seperated file",".tsv"), 3, 2, byrow = TRUE)
-    file <- tk_choose.files(caption = "Choose optimised ID conversion file", multi = FALSE, filter = filters)
+    file <- tk_choose.files(caption = "Choose optimised conversion file", multi = FALSE, filter = filters)
       
     # import file
     # select correct file format
@@ -607,7 +621,7 @@ if(out != "no"){
 } 
 if(out == "no"){
   # report step
-  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites. Data was NOT further manually edited."))
+  message(str_c("\nINFO: Compound to metabolite conversion completed! ",hits," out of ",htotal," (",perc,"%) compounds could automatically be translated into metabolites. Data was NOT manually edited."))
 }
 
 # Section 5.2 outputs:
