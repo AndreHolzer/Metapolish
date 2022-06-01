@@ -53,11 +53,11 @@ Find the **full documentation** here:
 
 #### **Developers**
 
-- **Andre Holzer** - *Postdoctoal Reseach Associate, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0003-2439-6364](https://orcid.org/0000-0003-2439-6364)
+- **Andre Holzer** - *Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0003-2439-6364](https://orcid.org/0000-0003-2439-6364)
 
-- **Matthew P Davey** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
+- **Matthew P Davey** - *Scottish Association for Marine Science (SAMS), Oban, UK and whilst at the Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)  https://www.sams.ac.uk/people/researchers/davey-dr-matthew/
 
-We would like to thank Monika Krolikowski for trailing the software. We'd also like to acknowledge Aom Buayam who contributed prototype some parts of this tool.
+We would like to thank Monika Krolikowski for trailing the software and acknowledge Aom Buayam who contributed prototype files for parts of this tool.
 
 
 
