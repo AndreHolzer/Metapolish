@@ -38,7 +38,7 @@ Find the **full documentation** here:
 - Jump to [Prerequisites](https://andreholzer.github.io/Metapolish/GS.html)
 - Jump to [Installing](https://andreholzer.github.io/Metapolish/GS_T.html)
 - Jump to [Usage](https://andreholzer.github.io/Metapolish/US.html)
-- Jump to [Example/Test analysis](https://andreholzer.github.io/Metapolish/GS_E.html)
+- Jump to [Example/Test analysis](https://andreholzer.github.io/Metapolish/US_E.html)
 - Jump to [Support](https://andreholzer.github.io/Metapolish/AP.html)
 
 
