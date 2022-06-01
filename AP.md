@@ -1,8 +1,10 @@
 # Appendix
 
-[{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](US_E.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](AP.md)
+[{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](US_A.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](AP.md)
 
 ----
+
+
 
 ## Support
 
@@ -14,13 +16,13 @@ If you have questions, suggestions or would like to contribute, email us at [and
 
 **If you use this pipeline for your analysis, please don't forget to cite:**
 
-**DOI: …** (*<u>coming soon, please get in contact before using the tool</u>*)
+DOI: … (*<u>coming soon, please get in contact before using the tool</u>*)
 
 
 
 #### **Developers**
 
-- **Andre Holzer** - *PhD Student, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0003-2439-6364](https://orcid.org/0000-0003-2439-6364)
+- **Andre Holzer** - *Postdoctoral Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0003-2439-6364](https://orcid.org/0000-0003-2439-6364)
 
 - **Matthew P Davey** - *Senior Research Associate, Department of Plant Sciences, Univeristy of Cambridge* [ORCID ID 0000-0002-5220-4174](https://orcid.org/0000-0002-5220-4174)
 

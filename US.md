@@ -3,10 +3,16 @@
 [{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](GS_T.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](US_E.md)
 
 ----
+
+
+
 ## Required input data and format
+
 The tool handles two different inputs, the GC/MS peak list data (metabolite vs. peak intensity), as well as an optional file containing sample information including dry weights.
 
 > **ATTENTION**: FILE NAMES MUST NOT CONTAIN ANY SPACES
+
+
 
 ### 1. GCMS data (required)
 GCMS data must contain information on Compounds, Response time (RT) and Peak Intensity (Response) and can be provided in several formats. Several files of the same format can be processed and merged together during a single MetaPLMA analysis run.
@@ -35,6 +41,8 @@ Dry weight information for the individual samples can be provided in a tab separ
    > **IMPORTANT**: DO NOT USE ANY OTHER COLUMN NAMES
 
 For convineince you can simply adjust the [Sample_info.tsv](example_data/Sample_info.tsv) example file to macth your samples.
+
+
 
 
 ----
