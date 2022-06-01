@@ -8,7 +8,7 @@
 
 ## Support
 
-If you have questions, suggestions or would like to contribute, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=MetaPLMA). Please use [GitHub issues](https://github.com/AndreHolzer/MetaPLMA/issues) for feature requests or bug reports.
+If you have questions, suggestions or would like to contribute, email us at [andre.holzer.biotech@gmail.com](mailto:andre.holzer.biotech@gmail.com?subject=Metapolish). Please use [GitHub issues](https://github.com/AndreHolzer/Metapolish/issues) for feature requests or bug reports.
 
 
 
@@ -34,4 +34,4 @@ We would like to thank Monika Krolikowski for trailing the software. We'd also l
 
 RESEARCH PURPOSES ONLY!
 
-For more details view [full license agreement](https://github.com/AndreHolzer/MetaPLMA/blob/master/LICENSE)
+For more details view [full license agreement](https://github.com/AndreHolzer/Metapolish/blob/master/LICENSE)

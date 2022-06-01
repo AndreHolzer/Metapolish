@@ -1,6 +1,6 @@
-# Introduction to MetaPLMA
+# Introduction to Metapolish
 
-This page provides an introduction to the Metabolite Peak List Merge & Annotation Tool (MetaPLMA) which was developed to simplify metabolmics data analysis. The material was initially created for the release of the software (v1.0) as of Mai 2022 and will be updated alongside newer versions.
+This page provides an introduction to the Metabolite Peak List Merge & Annotation Tool (Metapolish) which was developed to simplify metabolmics data analysis. The material was initially created for the release of the software (v1.0) as of Mai 2022 and will be updated alongside newer versions.
 
 
 
@@ -8,11 +8,11 @@ This page provides an introduction to the Metabolite Peak List Merge & Annotatio
 
  * [Getting started](GS.md)
     * [Install prerequiries](GS.md)
-    * [Install MetaPLMA](GS_T.md)
+    * [Install Metapolish](GS_T.md)
  * [Usage](US.md)
     * [Data input format](US.md)
-    * [Execute MetaPLMA](US_E.md)
-    * [MetaPLMA example run](US_A.md)
+    * [Execute Metapolish](US_E.md)
+    * [Metapolish example run](US_A.md)
     * [Generated outputs](US_O.md)
  * [Appendix](AP.md)
     * [Support](AP.md)

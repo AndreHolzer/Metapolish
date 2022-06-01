@@ -5,9 +5,10 @@
 ----
 
 
+
 ## Prerequisites
 
-MetaPLMS was written so it can be executed on all operating systems. This page gives detailed instructions on how to set up the required software to run the tool on Linux, Windows or MacOS operating systems. 
+Metapolish was written so it can be executed on all operating systems. This page gives detailed instructions on how to set up the required software to run the tool on Linux, Windows or MacOS operating systems. 
 
 
 
@@ -40,7 +41,7 @@ More information can be found on the [RStudio website](https://rstudio.com).
 
 ### 3. Install the latest version of XQuartz (for MacOS users only)
 
-Mac users will need to have xQuartz isntalled in order for MetaPLMA to operate normally. More information on insatlling XQuartz can be found [here](https://www.xquartz.org).
+Mac users will need to have xQuartz isntalled in order for Metapolish to operate normally. More information on insatlling XQuartz can be found [here](https://www.xquartz.org).
 
   Quick download links (version 2.7.11):
 
@@ -52,4 +53,4 @@ Mac users will need to have xQuartz isntalled in order for MetaPLMA to operate n
 
 
 ----
- Once all prerequisites have been installed on your system, you can continue with [installing MetaPLMA](GS_T.md)
+ Once all prerequisites have been installed on your system, you can continue with [installing Metapolish](GS_T.md)

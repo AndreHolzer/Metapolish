@@ -8,7 +8,7 @@
 
 #### **Output directory**
 
- A main output folder `<date>_GCSM-analysis-results` will be created under the select working directory which will include up to four output subfolder:
+ A main output folder `<date>_Metapolish-results` will be created under the select working directory which will include up to four output subfolder:
 
 - `pdf2tsv` stores information that was extracted from from .pdf files (if input files where of this type),
 - `compound2metabolite` stores the compound to metabolite conversion tables
@@ -21,8 +21,8 @@
 
  A final summary of the RT and Response data is stored in 
 
-- `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_retention-times_all-files.xlsx.xlsx` 
-- `<date>_GCSM-analysis-results/peak_data/<date>_MetaPLMA_analysis-results_response-data_all-files.xlsx.xlsx` 
+- `<date>_Metapolish-results/peak_data/<date>_Metapolish_analysis-results_retention-times_all-files.xlsx.xlsx` 
+- `<date>_Metapolish-results/peak_data/<date>_Metapolish_analysis-results_response-data_all-files.xlsx.xlsx` 
 
 
 

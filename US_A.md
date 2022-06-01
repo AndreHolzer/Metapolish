@@ -1,4 +1,4 @@
-# MetaPLMA example run
+# Metapolish example run
 
 [{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](US_E.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](US_O.md)
 
@@ -8,7 +8,7 @@
 
 #### Example data
 
-The tool comes with a set of GC-MS and LC-MS example data which is deposited in the [example_data](https://github.com/AndreHolzer/MetaPLMA/tree/master/example_data) folder. We recommend using this data for testing and training purposes. For a detailed usage example and tool guide, please have a look at the following steps.
+The tool comes with a set of GC-MS and LC-MS example data which is deposited in the [example_data](https://github.com/AndreHolzer/Metapolish/tree/master/example_data) folder. We recommend using this data for testing and training purposes. For a detailed usage example and tool guide, please have a look at the following steps.
 
 
 

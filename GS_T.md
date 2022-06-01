@@ -1,4 +1,4 @@
-# Installing MetaPLMA package
+# Installing Metapolish package
 
 [{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](GS.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](US.md)
 
@@ -13,14 +13,14 @@
 Get the latest version/release of the tool using the Pull or Git clone command
 
 ```
- git clone https://github.com/AndreHolzer/MetaPLMA --recursive
+ git clone https://github.com/AndreHolzer/Metapolish --recursive
 ```
 
 
 
 ### Alternatively or for Windows: 
 
-Go to the [MetePLMA GitHub page](https://github.com/AndreHolzer/MetaPLMA) and download the latest release as .zip file or use this [quick download link](https://github.com/AndreHolzer/MetaPLMA/archive/master.zip) to get the latest version.
+Go to the [Metapolish GitHub page](https://github.com/AndreHolzer/Metapolish) and download the latest release as .zip file or use this [quick download link](https://github.com/AndreHolzer/Metapolish/archive/master.zip) to get the latest version.
 
 <img src="images/GS_T_1.png" height="300px">
 
@@ -32,4 +32,4 @@ Unzip the folder using a common archive managing software such as [7zip](https:/
 
 
 ----
-Now you are fully set up to start [using MetaPLMA](US.md)
+Now you are fully set up to start [using Metapolish](US.md)

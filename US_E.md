@@ -1,4 +1,4 @@
-# Execute MetaPLMA 
+# Execute Metapolish 
 
 [{% octicon arrow-left height:32 class:"right left" vertical-align:middle aria-label:hi %}](US.md) [{% octicon home height:32 class:"right left" aria-label:hi %}](index.md) [{% octicon arrow-right height:32 class:"right left" aria-label:hi %}](US_A.md)
 
@@ -16,7 +16,7 @@ As of the current version the full interactive mode does not require any deeper 
 
 
 
-#### **To start MetaPLMA simply follow the steps below:** 
+#### **To start Metapolish simply follow the steps below:** 
 
 ##### 1. Start RStudio on your computer
 
@@ -26,9 +26,9 @@ As of the current version the full interactive mode does not require any deeper 
 
 ##### 2. Load/open the main analysis script 
 
-Open [MetaPLMA_main-anaylsis-script.R](scripts/MetaPLMA_main-anaylsis-script.R) from the MetaPLMA folder you have previously downloaded.
+Open [Metapolish_main-anaylsis-script.R](scripts/Metapolish_main-anaylsis-script.R) from the Metapolish folder you have previously downloaded.
 
-> File -> Open File -> Select MetaPLMA_main-anaylsis-script in ~/Downloads/MetaPLMA-master/scripts
+> File -> Open File -> Select Metapolish_main-anaylsis-script in ~/Downloads/Metapolish-master/scripts
 
 <img src="images/US_E_2.png" height="400px">
 
