@@ -1,3 +1,11 @@
+---
+title: "Metapolish - Metabolite Peak List Merging, Annotation & Polishing Tool"
+author: "[Andre Holzer](https://orcid.org/0000-0003-2439-6364), andre.holzer.biotech@gmail.com, Univeristy of Cambridge"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
 ### Step 0: Initialise (mandatory) ----
 cat("=============================\n")
 cat("Step 0: Initialise (mandatory)\n")
@@ -20,7 +28,7 @@ date <- format(Sys.Date(), format="%Y-%m-%d")
 wd <- tk_choose.dir(here(), caption = "Select your working directory")
 setwd(wd)
 # Name of the output directory (will be created in your current working directory)
-outfolder <- file.path(str_c(date,"_GCSM-analysis-results"))
+outfolder <- file.path(str_c(date,"_Metapolish-results"))
 # remove existing outfolder with same name
 unlink(outfolder, recursive = TRUE, force = FALSE)
 # create output dir
@@ -198,10 +206,12 @@ if(file_format == "xlsx"){
     ## correction of file.list data in case data is in Shimadzu output format:
     for (file in 1:length(files)){
       df <- file.list[[file]]
+      # identify header line
+      hline <- which(rownames(df) == "Peak#")
       #adjust column names
-      colnames(df) <- df[7,]
+      colnames(df) <- df[hline,]
       # remove header lines
-      df = df[-(1:7),]
+      df = df[-(1:hline),]
       #correct column nmaes
       df$RT <- df$Ret.Time
       df$Response <- df$Area
@@ -1068,7 +1078,7 @@ addWorksheet(wb, "RTs.coarse-scale1")
 writeData(wb, sheet = (s+2), df.RT.ordered.rename.coarse1.sorted)
 addWorksheet(wb, "RTs.coarse-scale2")
 writeData(wb, sheet = (s+3), df.RT.ordered.rename.coarse2.sorted)
-saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis-results_retention-times_all-files.xlsx")), overwrite = TRUE)
+saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_Metapolish_analysis-results_retention-times_all-files.xlsx")), overwrite = TRUE)
 
 
 ## Step 8.2: Save RT data in .tsv file format ----
@@ -1077,11 +1087,11 @@ saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis
 dir.create(file.path(outfolder,"peak_data","tsv"), showWarnings = FALSE)
 
 # save main output files in .tsv format
-write.table(df.RT.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.RT.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.RT.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.RT.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.RT.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_RTs.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_RTs.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_RTs.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_RTs.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_RTs.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.RT.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_RTs.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 
 
 ## Step 8.3: Save Response data in .xlsx file format ----
@@ -1104,7 +1114,7 @@ addWorksheet(wb, "Resp.coarse-scale1")
 writeData(wb, sheet = (s+2), df.Resp.ordered.rename.coarse1.sorted)
 addWorksheet(wb, "Resp.coarse-scale2")
 writeData(wb, sheet = (s+3), df.Resp.ordered.rename.coarse2.sorted)
-saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis-results_response-data_all-files.xlsx")), overwrite = TRUE)
+saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_Metapolish_analysis-results_response-data_all-files.xlsx")), overwrite = TRUE)
 
 
 ## Step 8.4: Save Response data in .tsv file format ----
@@ -1113,14 +1123,14 @@ saveWorkbook(wb, file.path(outfolder,"peak_data",paste0(date,"_MetaPLMA_analysis
 dir.create(file.path(outfolder,"peak_data","tsv"), showWarnings = FALSE) 
 
 # save main output files in .tsv format
-write.table(df.Resp.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.Resp.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.Resp.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.Resp.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
-write.table(df.Resp.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_MetaPLMA_analysis-results_Resp.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_Resp.raw.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_Resp.annotated.sorted.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.fine.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_Resp.fine-scale.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.coarse1.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_Resp.coarse-scale1.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
+write.table(df.Resp.ordered.rename.coarse2.sorted, file.path(outfolder,"peak_data","tsv", paste0(date,"_Metapolish_analysis-results_Resp.coarse-scale2.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
 
 # report output file generation
-message(str_c("\nINFO: All MetaPLMA analysis results were saved under: ",file.path(outfolder,"peak_data")))
+message(str_c("\nINFO: All Metapolish analysis results were saved under: ",file.path(outfolder,"peak_data")))
 
 # open outfolder
 opendir <- function(dir = outfolder){
