@@ -29,7 +29,7 @@ The tool can be operated following graphical user interphases (GUI) on top of R 
 ### **Documentation:**
 
 Find the **full documentation** here: 
-[https://andreholzer.github.io/Metapolish/](https://andreholzer.github.io/Metaploish/)
+[https://andreholzer.github.io/Metapolish/](https://andreholzer.github.io/Metapolish/)
 
 
 
