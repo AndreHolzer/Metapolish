@@ -1,12 +1,13 @@
----
-title: "Metapolish - Metabolite Peak List Merging, Annotation & Polishing Tool"
-author: "[Andre Holzer](https://orcid.org/0000-0003-2439-6364), andre.holzer.biotech@gmail.com, Univeristy of Cambridge"
-date: "`r Sys.Date()`"
-output: html_document
----
+## HEADER --------------------------------------------
+#
+# Title: Metapolish - Metabolite Peak List Merging, Annotation & Polishing Tool
+# Author: Dr Andre Holzer, https://orcid.org/0000-0003-2439-6364, andre.holzer.biotech@gmail.com, Univeristy of Cambridge
+# Date: `r paste(Sys.Date())`
+# Copyright (c) Holzer, `r paste(format(Sys.Date(), "%Y"))`
+#
 
 
-### Step 0: Initialise (mandatory) ----
+## Step 0: Initialise (mandatory) ----
 cat("=============================\n")
 cat("Step 0: Initialise (mandatory)\n")
 cat("=============================\n")
