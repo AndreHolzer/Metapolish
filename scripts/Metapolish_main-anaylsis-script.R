@@ -536,34 +536,75 @@ message(str_c("\nINFO: Compound names were partically translated to potential me
 ## Step 5.2: Add metabolite names, KEGG and CAT IDs using the MetaboAnalyst API ----
 
 # automatic processing 
-# create name vector and format type
-name.vec <- paste(df.names$Name, collapse = ';')
-toSend = list(queryList = name.vec, inputType = "name")
+# ATTENTION: This step can take a while ......
+
+if (length(df.names$Name) > 399) {
   
-# The MetaboAnalyst API url
-call <- "http://api.xialab.ca/mapcompounds"
-# Use httr::POST to send the request to the MetaboAnalyst API
-query_results <- httr::POST(call, body = toSend, encode = "json")
-# Check if response is ok (TRUE)
-# 200 is ok! 401 means an error has occured on the user's end.
-query_results$status_code==200
-# Parse the response into a table
-query_results_text <- content(query_results, "text", encoding = "UTF-8")
-query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
-# replae NULL values with NA
-Query <- unlist(nullToNA(query_results_json[[1]]))
-Match <- unlist(nullToNA(query_results_json[[2]]))
-HMDB <- unlist(nullToNA(query_results_json[[3]]))
-PubChem <- unlist(nullToNA(query_results_json[[4]]))
-ChEBI <- unlist(nullToNA(query_results_json[[5]]))
-KEGG <- unlist(nullToNA(query_results_json[[6]]))
-METLIN <- unlist(nullToNA(query_results_json[[7]]))
-SMILES <- unlist(nullToNA(query_results_json[[8]]))
-query_results_table <- data.frame(Query,Match, HMDB, PubChem, ChEBI ,KEGG, METLIN, SMILES)
-query_results <- as_tibble(query_results_table) %>%
-  select(-SMILES)%>%
-  rename(Name=Query)%>%
-  rename(Metabolite=Match)
+  query_results <- data.frame()
+  separations <-ceiling(length(df.names$Name)/400)
+  
+  for (i in 1:separations) {
+    # create name vector and format type
+    name.vec <- paste(df.names$Name[round(length(df.names$Name)/separations*(i-1)+1):round(length(df.names$Name)/separations*i)], collapse = ';')
+    toSend = list(queryList = name.vec, inputType = "name")
+    
+    # The MetaboAnalyst API url
+    call <- "http://api.xialab.ca/mapcompounds"
+    # Use httr::POST to send the request to the MetaboAnalyst API
+    query_results_html <- httr::POST(call, body = toSend, encode = "json")
+    # Check if response is ok (TRUE)
+    # 200 is ok! 401 means an error has occured on the user's end.
+    query_results_html$status_code==200
+    # Parse the response into a table
+    query_results_text <- content(query_results_html, "text", encoding = "UTF-8")
+    query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
+    # replae NULL values with NA
+    Query <- unlist(nullToNA(query_results_json[[1]]))
+    Match <- unlist(nullToNA(query_results_json[[2]]))
+    HMDB <- unlist(nullToNA(query_results_json[[3]]))
+    PubChem <- unlist(nullToNA(query_results_json[[4]]))
+    ChEBI <- unlist(nullToNA(query_results_json[[5]]))
+    KEGG <- unlist(nullToNA(query_results_json[[6]]))
+    METLIN <- unlist(nullToNA(query_results_json[[7]]))
+    SMILES <- unlist(nullToNA(query_results_json[[8]]))
+    query_results_table <- data.frame(Query,Match, HMDB, PubChem, ChEBI ,KEGG, METLIN, SMILES)
+    query_results_i <- as_tibble(query_results_table) %>%
+      select(-SMILES)%>%
+      rename(Name=Query)%>%
+      rename(Metabolite=Match)
+    query_results <- rbind(query_results, query_results_i)
+  }
+  
+} else  {
+  # create name vector and format type
+  name.vec <- paste(df.names$Name, collapse = ';')
+  toSend = list(queryList = name.vec, inputType = "name")
+  
+  # The MetaboAnalyst API url
+  call <- "http://api.xialab.ca/mapcompounds"
+  # Use httr::POST to send the request to the MetaboAnalyst API
+  query_results_html <- httr::POST(call, body = toSend, encode = "json")
+  # Check if response is ok (TRUE)
+  # 200 is ok! 401 means an error has occured on the user's end.
+  query_results_html$status_code==200
+  # Parse the response into a table
+  query_results_text <- content(query_results_html, "text", encoding = "UTF-8")
+  query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
+  # replae NULL values with NA
+  Query <- unlist(nullToNA(query_results_json[[1]]))
+  Match <- unlist(nullToNA(query_results_json[[2]]))
+  HMDB <- unlist(nullToNA(query_results_json[[3]]))
+  PubChem <- unlist(nullToNA(query_results_json[[4]]))
+  ChEBI <- unlist(nullToNA(query_results_json[[5]]))
+  KEGG <- unlist(nullToNA(query_results_json[[6]]))
+  METLIN <- unlist(nullToNA(query_results_json[[7]]))
+  SMILES <- unlist(nullToNA(query_results_json[[8]]))
+  query_results_table <- data.frame(Query,Match, HMDB, PubChem, ChEBI ,KEGG, METLIN, SMILES)
+  query_results <- as_tibble(query_results_table) %>%
+    select(-SMILES)%>%
+    rename(Name=Query)%>%
+    rename(Metabolite=Match)
+}
   
 # write name metabolite conversion to file
 write.table(query_results, file.path(outfolder,"compound2metabolite", paste0(date,"_name-to-metabolite-conversion.tsv")), quote = F, col.names = T, row.names = F, sep = '\t', na = "")
