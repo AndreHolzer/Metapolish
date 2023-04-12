@@ -538,10 +538,10 @@ message(str_c("\nINFO: Compound names were partically translated to potential me
 # automatic processing 
 # ATTENTION: This step can take a while ......
 
-if (length(df.names$Name) > 399) {
+if (length(df.names$Name) > 99) {
   
   query_results <- data.frame()
-  separations <-ceiling(length(df.names$Name)/400)
+  separations <-ceiling(length(df.names$Name)/100)
   
   for (i in 1:separations) {
     # create name vector and format type
@@ -558,7 +558,8 @@ if (length(df.names$Name) > 399) {
     # Parse the response into a table
     query_results_text <- content(query_results_html, "text", encoding = "UTF-8")
     query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
-    # replae NULL values with NA
+
+    # replace NULL values with NA
     Query <- unlist(nullToNA(query_results_json[[1]]))
     Match <- unlist(nullToNA(query_results_json[[2]]))
     HMDB <- unlist(nullToNA(query_results_json[[3]]))
@@ -574,7 +575,6 @@ if (length(df.names$Name) > 399) {
       rename(Metabolite=Match)
     query_results <- rbind(query_results, query_results_i)
   }
-  
 } else  {
   # create name vector and format type
   name.vec <- paste(df.names$Name, collapse = ';')
