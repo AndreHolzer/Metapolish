@@ -6,10 +6,8 @@ All notable changes to this project will be documented in this file.
 *Newest version [2024-04-11]*
 
 ### Added
-- -//
 
 ### Changed
-- -//
 
 ### Fixed
 - connection issue to MetaboAnalyst API resolved (Step 5.2)//
@@ -22,13 +20,10 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- -//
-
 ### Changed
 
 - Updated the compound to metabolite name conversion to now work for an unlimited number of samples.
 
 ### Fixed
 
-- -//
 
