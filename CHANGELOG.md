@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Fixed
-- connection issue to MetaboAnalyst API resolved (Step 5.2)//
+- connection issue to MetaboAnalyst API resolved (Step 5.2)
 
 
 
