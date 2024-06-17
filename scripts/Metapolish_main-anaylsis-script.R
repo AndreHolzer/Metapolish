@@ -581,7 +581,7 @@ if (length(df.names$Name) > 99) {
   toSend = list(queryList = name.vec, inputType = "name")
   
   # The MetaboAnalyst API url
-  call <- "https://www.xialab.ca/api/mapcompounds"
+  call <- "https://rest.xialab.ca/api/mapcompounds"
   # Use httr::POST to send the request to the MetaboAnalyst API
   query_results_html <- httr::POST(call, body = toSend, encode = "json")
   # Check if response is ok (TRUE)
