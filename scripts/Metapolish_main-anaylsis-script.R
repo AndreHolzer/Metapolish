@@ -552,9 +552,93 @@ if (length(df.names$Name) > 99) {
     call <- "https://rest.xialab.ca/api/mapcompounds"
     # Use httr::POST to send the request to the MetaboAnalyst API
     query_results_html <- httr::POST(call, body = toSend, encode = "json")
-    # Check if response is ok (TRUE)
+
+    # Check if server response is ok (TRUE) if not indicate error
     # 200 is ok! 401 means an error has occured on the user's end.
-    query_results_html$status_code==200
+    
+    # Define the data
+    http_status_codes <- data.frame(
+      Code = c(100, 101, 102, 103, 
+               200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 
+               300, 301, 302, 303, 304, 305, 307, 308, 
+               400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424, 425, 426, 428, 429, 431, 451, 
+               500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511),
+      Description = c(
+        "Continue: The initial part of a request has been received and has not yet been rejected by the server.",
+        "Switching Protocols: The server is switching protocols as requested by the client.",
+        "Processing (WebDAV): The server has received and is processing the request, but no response is available yet.",
+        "Early Hints: Used to return some response headers before the final HTTP message.",
+        "OK: The request has succeeded.",
+        "Created: The request has been fulfilled, and a new resource has been created.",
+        "Accepted: The request has been accepted for processing, but the processing is not complete.",
+        "Non-Authoritative Information: The server is returning information from a different source.",
+        "No Content: The server successfully processed the request, but is not returning any content.",
+        "Reset Content: The server successfully processed the request, but asks the client to reset the view.",
+        "Partial Content: The server is delivering only part of the resource due to a range header sent by the client.",
+        "Multi-Status (WebDAV): Provides status for multiple independent operations.",
+        "Already Reported (WebDAV): The members of a DAV binding have already been enumerated.",
+        "IM Used: The server has fulfilled a request for the resource using the 'instance-manipulations'.",
+        "Multiple Choices: There are multiple options for the resource.",
+        "Moved Permanently: The resource has been moved to a new URI permanently.",
+        "Found: The resource has been temporarily moved to a different URI.",
+        "See Other: The response can be found under a different URI.",
+        "Not Modified: The resource has not been modified since the version specified by the request headers.",
+        "Use Proxy: The requested resource must be accessed through a proxy.",
+        "Temporary Redirect: The request should be repeated with another URI, but future requests can still use the original URI.",
+        "Permanent Redirect: The request and all future requests should be repeated using another URI.",
+        "Bad Request: The server could not understand the request due to invalid syntax.",
+        "Unauthorized: The client must authenticate itself to get the requested response.",
+        "Payment Required: Reserved for future use.",
+        "Forbidden: The client does not have access rights to the content.",
+        "Not Found: The server cannot find the requested resource.",
+        "Method Not Allowed: The request method is known by the server but is not supported by the target resource.",
+        "Not Acceptable: The server cannot produce a response matching the list of acceptable values.",
+        "Proxy Authentication Required: The client must first authenticate itself with the proxy.",
+        "Request Timeout: The server timed out waiting for the request.",
+        "Conflict: The request conflicts with the current state of the server.",
+        "Gone: The resource is no longer available and will not be available again.",
+        "Length Required: The server refuses to accept the request without a defined Content-Length.",
+        "Precondition Failed: The server does not meet one of the preconditions that the requester put on the request.",
+        "Payload Too Large: The request entity is larger than limits defined by the server.",
+        "URI Too Long: The URI requested by the client is longer than the server is willing to interpret.",
+        "Unsupported Media Type: The media format of the requested data is not supported by the server.",
+        "Range Not Satisfiable: The range specified by the Range header field in the request cannot be fulfilled.",
+        "Expectation Failed: The expectation given in the request's Expect header could not be met.",
+        "I'm a teapot: This code was defined in 1998 as an April Fools' joke and is not expected to be implemented by actual HTTP servers.",
+        "Misdirected Request: The request was directed at a server that is not able to produce a response.",
+        "Unprocessable Entity (WebDAV): The request was well-formed but was unable to be followed due to semantic errors.",
+        "Locked (WebDAV): The resource that is being accessed is locked.",
+        "Failed Dependency (WebDAV): The request failed due to failure of a previous request.",
+        "Too Early: The server is unwilling to risk processing a request that might be replayed.",
+        "Upgrade Required: The client should switch to a different protocol.",
+        "Precondition Required: The server requires the request to be conditional.",
+        "Too Many Requests: The user has sent too many requests in a given amount of time ('rate limiting').",
+        "Request Header Fields Too Large: The server is unwilling to process the request because its header fields are too large.",
+        "Unavailable For Legal Reasons: The user requests an illegal resource, such as a web page censored by a government.",
+        "Internal Server Error: The server encountered an unexpected condition that prevented it from fulfilling the request.",
+        "Not Implemented: The server does not support the functionality required to fulfill the request.",
+        "Bad Gateway: The server, while acting as a gateway or proxy, received an invalid response from the upstream server.",
+        "Service Unavailable: The server is not ready to handle the request.",
+        "Gateway Timeout: The server is acting as a gateway or proxy and did not get a response in time from the upstream server.",
+        "HTTP Version Not Supported: The HTTP version used in the request is not supported by the server.",
+        "Variant Also Negotiates: The server has an internal configuration error.",
+        "Insufficient Storage (WebDAV): The server is unable to store the representation needed to complete the request.",
+        "Loop Detected (WebDAV): The server detected an infinite loop while processing a request.",
+        "Not Extended: Further extensions to the request are required for the server to fulfill it.",
+        "Network Authentication Required: The client needs to authenticate to gain network access."
+      )
+    )
+    
+    status_code <- query_results_html$status_code
+    subset <- filter(http_status_codes, Code==status_code)
+    status_message <-subset$Description[1]
+    
+    if (!status_code %in% c(200, 0)) {
+      stop(paste("Server status code is", status_code,";", status_message))
+    } else {
+      cat("Server Success: Status code is", status_code, ";", status_message, "\n")
+    }
+    
     # Parse the response into a table
     query_results_text <- content(query_results_html, "text", encoding = "UTF-8")
     query_results_json <- RJSONIO::fromJSON(query_results_text, flatten = TRUE)
